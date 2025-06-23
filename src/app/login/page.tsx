@@ -79,7 +79,7 @@ export default function SupabaseLoginForm() {
 
       //Redirect based on user type
       if (data) {
-        router.push('/shop-dashboard');
+        router.push('/shop/dashboard');
       } else {
         router.push('/');
       }

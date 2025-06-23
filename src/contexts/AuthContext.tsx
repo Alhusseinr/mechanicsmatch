@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setLoading(false);
 
             if (event === 'SIGNED_IN') {
-                router.push('/shop-dashboard');
+                router.push('/shop/dashboard');
                 router.refresh();
             } else if (event === 'SIGNED_OUT') {
                 router.push('/login');
