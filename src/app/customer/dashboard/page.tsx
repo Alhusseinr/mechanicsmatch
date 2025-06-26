@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Type definitions
 interface Vehicle {
@@ -249,6 +250,8 @@ export default function CustomerDashboard() {
     ));
   };
 
+  const {signOut} = useAuth();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       {/* Header */}
@@ -275,6 +278,9 @@ export default function CustomerDashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <span>Find Mechanic</span>
+              </button>
+              <button onClick={signOut} className="flex items-center space-x-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 py-2 rounded-xl font-semibold transition-all duration-300">
+                <span>Logout</span>
               </button>
             </div>
           </div>
