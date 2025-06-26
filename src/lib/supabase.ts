@@ -1,11 +1,14 @@
-// NEW (Pages Router)
-import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
-import { GetServerSidePropsContext } from 'next/dist/types'
+// src/lib/supabase.ts
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createMiddlewareClient as createSupabaseMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { NextRequest, NextResponse } from 'next/server'
 
-// For client-side use (components, pages)
-export const createClient = () => createPagesBrowserClient()
+// For client-side use (components, pages) - App Router compatible
+export function createClient() {
+  return createClientComponentClient()
+}
 
-// For server-side use (getServerSideProps, API routes)
-export const createServerClient = (ctx: GetServerSidePropsContext) =>
-  createPagesServerClient(ctx)
+// For middleware
+export function createMiddlewareClient(req: NextRequest, res: NextResponse) {
+  return createSupabaseMiddlewareClient({ req, res })
+}
