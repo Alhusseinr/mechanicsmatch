@@ -4,8 +4,10 @@ import { useState } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/navigation";
+import TrustPilotReviews from "@/components/ui/TrustPilotReviews";
+import AboutUs from "@/components/ui/AboutUs";
+import NavBar from "@/components/ui/NavBar";
 
 interface Mechanic {
   id: number;
@@ -95,7 +97,6 @@ export default function MechanicsMatch() {
   const [searchLocation, setSearchLocation] = useState("");
   const [selectedService, setSelectedService] = useState("");
   const [mechanics, setMechanics] = useState(mockMechanics);
-
   const router = useRouter();
 
   const handleSearch = () => {
@@ -110,105 +111,18 @@ export default function MechanicsMatch() {
     console.log("View profile for mechanic:", mechanicId);
   };
 
-  const handleLogin = () => {
-    router.push("/login");
-  }
+  const handleSignIn = () => {
+     router.push("/login");
+  };
+
+  const handleSignUp = () => {
+    router.push("/register");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       {/* Hero Section */}
-      <div className="bg-grey">
-        <header className="absolute inset-x-0 top-0 z-50">
-          <nav
-            aria-label="Global"
-            className="flex items-center justify-between p-6 lg:px-8"
-          >
-            <div className="flex lg:flex-1">
-              <a href="#" className="-m-1.5 p-1.5">
-                <span className="sr-only">MechanicsMatch</span>
-                <img
-                  alt="MechanicsMatch Logo"
-                  src="/logo.png"
-                  className="h-8 w-auto"
-                />
-              </a>
-            </div>
-            <div className="flex lg:hidden">
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen(true)}
-                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 cursor-pointer"
-              >
-                <span className="sr-only">Open main menu</span>
-                <Bars3Icon aria-hidden="true" className="size-6" />
-              </button>
-            </div>
-            <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-              <div className="flex-shrink-0 flex items-end">
-                <button
-                  onClick={handleLogin}
-                  className="w-full lg:w-auto h-10 px-4 lg:px-8 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/50 flex items-center justify-center cursor-pointer"
-                >
-                  Log in
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-6 ml-2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </nav>
-          <Dialog
-            open={mobileMenuOpen}
-            onClose={setMobileMenuOpen}
-            className="lg:hidden"
-          >
-            <div className="fixed inset-0 z-50" />
-            <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div className="flex items-center justify-between">
-                <a href="#" className="-m-1.5 p-1.5">
-                  <span className="sr-only">Your Company</span>
-                  <img
-                    alt=""
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                    className="h-8 w-auto"
-                  />
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="-m-2.5 rounded-md p-2.5 text-gray-700 cursor-pointer"
-                >
-                  <span className="sr-only">Close menu</span>
-                  <XMarkIcon aria-hidden="true" className="size-6" />
-                </button>
-              </div>
-              <div className="mt-6 flow-root">
-                <div className="-my-6 divide-y divide-gray-500/10">
-                  <div className="py-6">
-                    <a
-                      href="#"
-                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                    >
-                      Log in
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </DialogPanel>
-          </Dialog>
-        </header>
-
+      <section className="relative">
         <div className="relative isolate px-4 pt-14 sm:px-6 lg:px-8">
           {/* Background decoration - top */}
           <div
@@ -241,7 +155,7 @@ export default function MechanicsMatch() {
 
               {/* Search Section */}
               <div className="mt-10 w-full max-w-4xl mx-auto">
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl lg:rounded-3xl shadow-xl border border-white/20 p-4 sm:p-6 lg:p-8">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl lg:rounded-3xl shadow-xl border border-white/20 p-4 sm:p-6 lg:p-4">
                   <div className="flex flex-col lg:flex-row gap-4 lg:gap-3 items-stretch">
                     {/* Location Input */}
                     <div className="flex-1 min-w-0">
@@ -332,10 +246,102 @@ export default function MechanicsMatch() {
             />
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">
+              How It Works
+            </h2>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+              Getting your car serviced has never been easier. Here's how
+              MechanicsMatch works in three simple steps.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  className="w-10 h-10 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">
+                1. Search & Compare
+              </h3>
+              <p className="text-slate-600">
+                Enter your location and service needed. Browse verified
+                mechanics, read reviews, and compare prices in your area.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  className="w-10 h-10 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">
+                2. Book Appointment
+              </h3>
+              <p className="text-slate-600">
+                Schedule your service online with real-time availability. Get
+                instant confirmation and reminders.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  className="w-10 h-10 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">
+                3. Get Service
+              </h3>
+              <p className="text-slate-600">
+                Receive professional service from verified mechanics. Pay
+                securely online and leave a review.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Mechanics Listings */}
-      <section className="py-16 bg-white">
+      <section id="mechanics" className="py-16 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-slate-900 mb-4">
@@ -367,7 +373,7 @@ export default function MechanicsMatch() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m4 0V9a1 1 0 011-1h4a1 1 0 011 1v12"
                       />
                     </svg>
                   </div>
@@ -479,7 +485,7 @@ export default function MechanicsMatch() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m4 0V9a1 1 0 011-1h4a1 1 0 011 1v12"
                       />
                     </svg>
                   </div>

@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       if (data.session) {
         // Fetch user profile to determine redirect
         const { data: profile, error: profileError } = await supabase
-          .from('users')
+          .from('user')
           .select('user_type')
           .eq('id', data.session.user.id)
           .single()
