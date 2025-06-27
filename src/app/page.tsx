@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { redirect } from "next/dist/server/api-utils";
+import { useRouter } from "next/navigation";
 
 interface Mechanic {
   id: number;
@@ -94,6 +96,8 @@ export default function MechanicsMatch() {
   const [selectedService, setSelectedService] = useState("");
   const [mechanics, setMechanics] = useState(mockMechanics);
 
+  const router = useRouter();
+
   const handleSearch = () => {
     console.log("Searching for:", { searchLocation, selectedService });
   };
@@ -105,6 +109,10 @@ export default function MechanicsMatch() {
   const handleViewProfile = (mechanicId: number) => {
     console.log("View profile for mechanic:", mechanicId);
   };
+
+  const handleLogin = () => {
+    router.push("/login");
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
@@ -136,9 +144,28 @@ export default function MechanicsMatch() {
               </button>
             </div>
             <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-              <a href="#" className="text-sm/6 font-semibold text-gray-900">
-                Log in <span aria-hidden="true">&rarr;</span>
-              </a>
+              <div className="flex-shrink-0 flex items-end">
+                <button
+                  onClick={handleLogin}
+                  className="w-full lg:w-auto h-10 px-4 lg:px-8 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/50 flex items-center justify-center cursor-pointer"
+                >
+                  Log in
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6 ml-2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </nav>
           <Dialog
