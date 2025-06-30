@@ -105,6 +105,8 @@ export default function RegisterForm() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // In your Register.tsx component, update the handleSubmit function:
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -116,11 +118,13 @@ export default function RegisterForm() {
     try {
       console.log("Starting registration...");
 
-      // Step 1: Create auth user with metadata
+      // Step 1: Create auth user with email confirmation
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
+          // This is important for email confirmation
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             first_name: formData.firstName,
             last_name: formData.lastName,
@@ -133,6 +137,7 @@ export default function RegisterForm() {
       });
 
       console.log("Auth signup result:", { authData, authError });
+      
 
       if (authError) {
         throw authError;
@@ -142,10 +147,8 @@ export default function RegisterForm() {
         throw new Error("User creation failed - no user returned");
       }
 
-      console.log("Auth user created successfully:", authData.user.id);
-
-      // Step 2: Create profile in public.users
       console.log("Creating user profile...");
+      
       const { error: profileError } = await supabase
         .schema("public")
         .from("users")
@@ -161,42 +164,36 @@ export default function RegisterForm() {
 
       console.log("Profile creation result:", profileError);
 
-      if (profileError) {
-        console.error("Profile creation failed:", profileError);
+      // Check if email confirmation is needed
+      if (
+        !authData.session &&
+        authData.user &&
+        !authData.user.email_confirmed_at
+      ) {
+        console.log("Email confirmation required");
 
-        // Check if it's a duplicate key error (user already exists)
-        if (profileError.code === "23505") {
-          console.log("User profile already exists, updating instead...");
+        // Show success message about email confirmation
+        alert(
+          "Registration successful! Please check your email and click the confirmation link to activate your account."
+        );
 
-          // Try to update instead
-          const { error: updateError } = await supabase
-            .from("users")
-            .update({
-              email: formData.email,
-              first_name: formData.firstName,
-              last_name: formData.lastName,
-              user_type: formData.userType,
-              phone: formData.phone || null,
-              updated_at: new Date().toISOString(),
-            })
-            .eq("id", authData.user.id);
-
-          if (updateError) {
-            console.error("Profile update also failed:", updateError);
-            // Continue anyway - user can complete profile later
-          }
-        } else {
-          // Log the error but don't fail the registration
-          console.error("Profile creation failed with error:", profileError);
-        }
-      } else {
-        console.log("Profile created successfully");
+        // Redirect to login with a message
+        router.push(
+          "/login?message=Please check your email for a confirmation link"
+        );
+        return;
       }
 
-      // Step 3: If mechanic, create shop profile (optional - could be done later)
-      if (formData.userType === "mechanic" && formData.shopName) {
-        console.log("Creating shop profile...");
+      // If we get here, user was created and confirmed (unlikely with email confirmation enabled)
+      console.log("User created and confirmed immediately:", authData.user.id);
 
+      if (profileError) {
+        console.error("Profile creation failed:", profileError);
+        // This is non-critical since the user can complete their profile later
+      }
+
+      // If mechanic, create shop profile
+      if (formData.userType === "mechanic" && formData.shopName) {
         const { error: shopError } = await supabase.from("shops").insert({
           owner_id: authData.user.id,
           name: formData.shopName,
@@ -213,24 +210,30 @@ export default function RegisterForm() {
 
         if (shopError) {
           console.error("Shop creation failed:", shopError);
-          // Don't fail registration, shop can be set up later
-        } else {
-          console.log("Shop created successfully");
         }
       }
 
-      console.log("Registration completed successfully");
-
-      // Success message
-      alert(
-        "Registration successful! Please check your email to verify your account."
-      );
-
-      // Redirect to login
-      router.push("/login");
+      // Success - redirect to appropriate dashboard
+      if (formData.userType === "mechanic") {
+        router.push("/shop/dashboard");
+      } else {
+        router.push("/customer/dashboard");
+      }
     } catch (error: any) {
       console.error("Registration failed:", error);
-      setAuthError(error.message || "Registration failed. Please try again.");
+
+      // Handle specific error cases
+      if (error.message?.includes("User already registered")) {
+        setAuthError(
+          "An account with this email already exists. Please sign in instead."
+        );
+      } else if (error.message?.includes("Password should be at least")) {
+        setAuthError("Password must be at least 6 characters long.");
+      } else if (error.message?.includes("Invalid email")) {
+        setAuthError("Please enter a valid email address.");
+      } else {
+        setAuthError(error.message || "Registration failed. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

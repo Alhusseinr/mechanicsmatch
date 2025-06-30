@@ -14,34 +14,10 @@ export default function AboutUs() {
               verified mechanics, compare services, and book appointments with
               confidence.
             </p>
-            <p className="text-lg text-blue-200 mb-8 leading-relaxed">
-              Founded by automotive enthusiasts, we understand the importance of
-              finding reliable, skilled mechanics who you can trust with your
-              vehicle. Every mechanic on our platform is thoroughly vetted and
-              customer-reviewed.
-            </p>
-
-            <div className="grid grid-cols-2 gap-6 mb-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-orange-400 mb-2">
-                  2019
-                </div>
-                <p className="text-blue-200">Founded</p>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-orange-400 mb-2">
-                  50+
-                </div>
-                <p className="text-blue-200">Cities Served</p>
-              </div>
-            </div>
 
             <div className="flex flex-wrap gap-4">
               <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
                 Join Our Network
-              </button>
-              <button className="border border-blue-300 text-blue-100 hover:bg-blue-800 px-6 py-3 rounded-lg font-semibold transition-colors">
-                Learn More
               </button>
             </div>
           </div>
