@@ -148,6 +148,7 @@ export default function RegisterForm() {
       }
 
       console.log("Creating user profile...");
+      
       const { error: profileError } = await supabase
         .schema("public")
         .from("users")
