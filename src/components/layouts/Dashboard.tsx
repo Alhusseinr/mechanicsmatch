@@ -267,7 +267,7 @@ function Drawer({ isOpen, onClose, userType, currentPath }: DrawerProps) {
             <button
               onClick={() => {
                 signOut();
-                onClose();
+                router.push('/login');
               }}
               className="w-full flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-semibold transition-colors"
             >

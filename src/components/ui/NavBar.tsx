@@ -12,8 +12,6 @@ export default function NavBar() {
   const pathname = usePathname(); // Get current route
   const { user, session, loading, signOut } = useAuth();
 
-  console.log("user:", user);
-
   const handleListGarage = () => {
     console.log("List your garage clicked");
   };
@@ -45,6 +43,10 @@ export default function NavBar() {
   }
 
   if (isCustomerDashboard) {
+    return null; // Hide navbar on customer dashboard
+  }
+
+  if (isMechanicDashboard) {
     return null; // Hide navbar on customer dashboard
   }
 

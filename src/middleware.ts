@@ -47,7 +47,9 @@ export async function middleware(req: NextRequest) {
         .eq('id', session.user.id)
         .single()
 
-        console.log('User profile fetched successfully:', profile)
+        if (!profile) {
+            return NextResponse.redirect(new URL('/login', req.url))
+        }
 
       if (profile?.user_type === 'mechanic') {
         return NextResponse.redirect(new URL('/shop/dashboard', req.url))

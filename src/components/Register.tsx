@@ -137,6 +137,7 @@ export default function RegisterForm() {
       });
 
       console.log("Auth signup result:", { authData, authError });
+      
 
       if (authError) {
         throw authError;
@@ -145,6 +146,22 @@ export default function RegisterForm() {
       if (!authData.user) {
         throw new Error("User creation failed - no user returned");
       }
+
+      console.log("Creating user profile...");
+      const { error: profileError } = await supabase
+        .schema("public")
+        .from("users")
+        .insert({
+          id: authData.user.id,
+          email: formData.email,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          user_type: formData.userType,
+          phone: formData.phone || null,
+          is_verified: false,
+        });
+
+      console.log("Profile creation result:", profileError);
 
       // Check if email confirmation is needed
       if (
@@ -168,17 +185,6 @@ export default function RegisterForm() {
 
       // If we get here, user was created and confirmed (unlikely with email confirmation enabled)
       console.log("User created and confirmed immediately:", authData.user.id);
-
-      // Create profile in public.users
-      const { error: profileError } = await supabase.from("users").insert({
-        id: authData.user.id,
-        email: formData.email,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        user_type: formData.userType,
-        phone: formData.phone || null,
-        is_verified: false,
-      });
 
       if (profileError) {
         console.error("Profile creation failed:", profileError);
