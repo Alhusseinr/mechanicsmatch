@@ -1,6 +1,6 @@
 "use client";
 
-import RegisterForm from "@/components/ui/Register";
+import RegisterForm from "@/components/Register";
 
 
 export default function Login() {
