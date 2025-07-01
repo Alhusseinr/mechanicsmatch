@@ -12,6 +12,18 @@ interface CustomUser extends User {
   last_name?: string;
   phone?: string;
   is_verified?: boolean;
+  cars?: Car[];
+}
+
+interface Car {
+  id: string;
+  car_make: string;
+  car_model: string;
+  car_trim: string;
+  car_year: number;
+  car_license_plate: string;
+  created_at: string;
+  updated_at: string;
 }
 
 type AuthContextType = {
@@ -55,6 +67,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 return authUser; // Return basic auth user if profile fetch fails
             }
 
+            console.log('Fetched user profile:', profile);
+
+            const { data: userCars, error: userCarsError } = await supabase
+                .from('cars')
+                .select('*')
+                .eq('user_id', authUser.id);
+
+            if (userCarsError) {
+                console.error('Error fetching user cars:', userCarsError);
+                return {
+                    ...authUser,
+                    user_type: profile.user_type,
+                    cars: []
+                };
+            }
+
+            console.log('Fetched user cars:', userCars);
+
             // Merge auth.users data with public.users data
             return {
                 ...authUser,
@@ -62,7 +92,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 first_name: profile.first_name,
                 last_name: profile.last_name,
                 phone: profile.phone,
-                is_verified: profile.is_verified
+                is_verified: profile.is_verified,
+                cars: userCars || []
             };
         } catch (error) {
             console.error('Error fetching user profile:', error);

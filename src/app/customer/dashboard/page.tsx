@@ -1,22 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardLayout from '@/components/layouts/Dashboard';
 
 // Your existing interfaces and mock data remain the same
-interface Vehicle {
-  id: string;
-  make: string;
-  model: string;
-  year: string;
-  vin?: string;
-  licensePlate?: string;
-  color?: string;
-  mileage?: number;
-  lastService?: string;
-  photo?: string;
-}
+// interface Vehicle {
+//   id: string;
+//   make: string;
+//   model: string;
+//   trim: string;
+//   year: string;
+//   vin?: string;
+//   licensePlate?: string;
+//   color?: string;
+//   mileage?: number;
+//   lastService?: string;
+//   photo?: string;
+// }
 
 interface Booking {
   id: string;
@@ -32,30 +33,16 @@ interface Booking {
   reviewLeft?: boolean;
 }
 
-// ... (keep all your existing mock data) ...
-const mockVehicles: Vehicle[] = [
-  {
-    id: '1',
-    make: 'Toyota',
-    model: 'Camry',
-    year: '2020',
-    vin: 'JT2BG12K1Y0123456',
-    licensePlate: 'ABC 1234',
-    color: 'Silver',
-    mileage: 45000,
-    lastService: '2025-05-15'
-  },
-  {
-    id: '2',
-    make: 'Honda',
-    model: 'Civic',
-    year: '2019',
-    licensePlate: 'XYZ 5678',
-    color: 'Blue',
-    mileage: 52000,
-    lastService: '2025-04-20'
-  }
-];
+interface Car {
+  id: string;
+  car_make: string;
+  car_model: string;
+  car_trim: string;
+  car_year: number;
+  car_license_plate: string;
+  created_at: string;
+  updated_at: string;
+}
 
 const mockBookings: Booking[] = [
   {
@@ -85,27 +72,37 @@ const mockBookings: Booking[] = [
 ];
 
 export default function CustomerDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'vehicles' | 'bookings' | 'saved' | 'quotes'>('overview');
-  const [vehicles, setVehicles] = useState(mockVehicles);
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
-  const [showAddVehicle, setShowAddVehicle] = useState(false);
-
   const { user } = useAuth();
+
+  const [cars, setCars] = useState([] as Car[]);
+  const [showAddCar, setShowAddCar] = useState(false);
 
   const upcomingBookings = mockBookings.filter(b => b.status === 'upcoming');
   const completedBookings = mockBookings.filter(b => b.status === 'completed');
 
-  const handleAddVehicle = (vehicleData: Partial<Vehicle>) => {
-    const newVehicle: Vehicle = {
-      id: Date.now().toString(),
-      make: vehicleData.make || '',
-      model: vehicleData.model || '',
-      year: vehicleData.year || '',
-      ...vehicleData
-    };
-    setVehicles([...vehicles, newVehicle]);
-    setShowAddVehicle(false);
-  };
+   useEffect(() => {
+    if (user?.cars) {
+      setCars(user.cars);
+    } else {
+      setCars([]);
+    }
+  }, [user?.cars]);
+
+  // const handleAddVehicle = (vehicleData: Partial<Car>) => {
+  //   const newVehicle: Car = {
+  //     id: Date.now().toString(),
+  //     car_make: vehicleData.car_make || '',
+  //     car_model: vehicleData.car_model || '',
+  //     car_trim: vehicleData.car_trim || '',
+  //     car_year: vehicleData.car_year || 0,
+  //     car_license_plate: vehicleData.car_license_plate || '',
+  //     created_at: new Date().toISOString(),
+  //     updated_at: new Date().toISOString(),
+  //     ...vehicleData
+  //   };
+  //   setVehicles([...vehicles, newVehicle]);
+  //   setShowAddVehicle(false);
+  // };
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -131,8 +128,8 @@ export default function CustomerDashboard() {
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-600 text-sm font-medium">Active Vehicles</p>
-                <p className="text-3xl font-bold text-slate-900">{vehicles.length}</p>
+                <p className="text-slate-600 text-sm font-medium">Active Cars</p>
+                <p className="text-3xl font-bold text-slate-900">{cars.length}</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,7 +219,7 @@ export default function CustomerDashboard() {
           </button>
 
           <button 
-            onClick={() => setShowAddVehicle(true)}
+            onClick={() => setShowAddCar(true)}
             className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             <div className="flex items-center space-x-3">
@@ -274,17 +271,17 @@ export default function CustomerDashboard() {
         {/* Recent Vehicles */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-slate-900">My Vehicles</h3>
+            <h3 className="text-xl font-bold text-slate-900">My Cars</h3>
             <button 
-              onClick={() => setShowAddVehicle(true)}
+              onClick={() => setShowAddCar(true)}
               className="text-blue-600 hover:text-blue-800 font-medium"
             >
-              Add Vehicle
+              Add Car
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {vehicles.slice(0, 3).map((vehicle) => (
-              <div key={vehicle.id} className="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors cursor-pointer">
+            {cars.map((car) => (
+              <div key={car.id} className="bg-slate-100 rounded-xl p-4 hover:bg-slate-100 transition-colors cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-gradient-to-r from-slate-400 to-slate-500 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -293,9 +290,9 @@ export default function CustomerDashboard() {
                   </div>
                   <div>
                     <div className="font-semibold text-slate-900">
-                      {vehicle.year} {vehicle.make} {vehicle.model}
+                      {car.car_year} {car.car_make} {car.car_model} {car.car_trim}
                     </div>
-                    <div className="text-sm text-slate-600">{vehicle.licensePlate}</div>
+                    <div className="text-sm text-slate-600">{car.car_license_plate}</div>
                   </div>
                 </div>
               </div>
@@ -330,21 +327,22 @@ export default function CustomerDashboard() {
           </div>
         </div>
 
-        {/* Add Vehicle Modal */}
-        {showAddVehicle && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowAddVehicle(false)}>
+        {/* Add Car Modal */}
+        {showAddCar && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowAddCar(false)}>
             <div className="bg-white rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-              <h3 className="text-2xl font-bold text-slate-900 mb-6">Add New Vehicle</h3>
+              <h3 className="text-2xl font-bold text-slate-900 mb-6">Add New Car</h3>
               <form onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
-                handleAddVehicle({
-                  make: formData.get('make') as string,
-                  model: formData.get('model') as string,
-                  year: formData.get('year') as string,
-                  licensePlate: formData.get('licensePlate') as string,
-                  vin: formData.get('vin') as string,
-                });
+                // handleAddVehicle({
+                //   make: formData.get('make') as string,
+                //   model: formData.get('model') as string,
+                //   trim: formData.get('trim') as string,
+                //   year: formData.get('year') as string,
+                //   licensePlate: formData.get('licensePlate') as string,
+                //   vin: formData.get('vin') as string,
+                // });
               }}>
                 <div className="space-y-4">
                   <div>
@@ -392,7 +390,7 @@ export default function CustomerDashboard() {
                 <div className="flex items-center space-x-4 mt-6">
                   <button
                     type="button"
-                    onClick={() => setShowAddVehicle(false)}
+                    onClick={() => setShowAddCar(false)}
                     className="flex-1 bg-slate-100 text-slate-700 py-3 px-6 rounded-xl font-semibold hover:bg-slate-200 transition-colors"
                   >
                     Cancel
