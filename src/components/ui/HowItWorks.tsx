@@ -72,7 +72,7 @@ const items = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-20 bg-white">
+    <section id="how-it-works" className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-slate-900 mb-4">
@@ -87,7 +87,7 @@ export default function HowItWorks() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Loop through steps */}
           {items.map((item, index) => (
-            <div key={index} className="text-center border rounded-lg p-8 bg-slate-50">
+            <div key={index} className="text-center border rounded-lg p-8 bg-slate-100">
               {item.icon}
               <h3 className="text-xl font-bold text-slate-900 mb-4">
                 {index + 1}. {item.item}
