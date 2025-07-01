@@ -1,17 +1,15 @@
 'use client';
 
 import { useState } from "react";
-import { CustomSelect } from "./CustomSelect";
 import Search from "./Search";
 
 
 
 export default function Hero() {
-  const [selectedService, setSelectedService] = useState("");
 
   return (
     <section className="relative">
-      <div className="relative isolate px-4 lg:pt-14 sm:pt-7 sm:px-6 lg:px-8">
+      <div className="relative isolate px-4 lg:pt-8 sm:pt-7 sm:px-6 lg:px-8">
         {/* Background decoration - top */}
         <div
           aria-hidden="true"

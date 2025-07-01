@@ -5,7 +5,6 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import MobileMenu from "./MobileMenu";
-import FadeIn from "./FadeIn";
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -62,30 +61,30 @@ export default function NavBar() {
             {/* Dashboard link based on user type */}
             <button
               onClick={() => {
-                if (user.user_type === 'mechanic') {
-                  router.push('/shop/dashboard');
+                if (user.user_type === "mechanic") {
+                  router.push("/shop/dashboard");
                 } else {
-                  router.push('/customer/dashboard');
+                  router.push("/customer/dashboard");
                 }
               }}
               className={`font-medium transition-colors ${
-                isDashboardPage 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
-                  : 'text-slate-700 hover:text-blue-600'
+                isDashboardPage
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-slate-700 hover:text-blue-600"
               }`}
             >
               Dashboard
             </button>
 
             {/* Customer-specific links */}
-            {user.user_type === 'customer' && (
+            {user.user_type === "customer" && (
               <>
                 <button
-                  onClick={() => router.push('/booking')}
+                  onClick={() => router.push("/booking")}
                   className={`font-medium transition-colors ${
-                    isBookingPage 
-                      ? 'text-blue-600 border-b-2 border-blue-600' 
-                      : 'text-slate-700 hover:text-blue-600'
+                    isBookingPage
+                      ? "text-blue-600 border-b-2 border-blue-600"
+                      : "text-slate-700 hover:text-blue-600"
                   }`}
                 >
                   Book Service
@@ -100,20 +99,20 @@ export default function NavBar() {
             )}
 
             {/* Mechanic-specific links */}
-            {user.user_type === 'mechanic' && (
+            {user.user_type === "mechanic" && (
               <>
                 <button
-                  onClick={() => router.push('/shop/profile')}
+                  onClick={() => router.push("/shop/profile")}
                   className={`font-medium transition-colors ${
-                    isProfilePage 
-                      ? 'text-blue-600 border-b-2 border-blue-600' 
-                      : 'text-slate-700 hover:text-blue-600'
+                    isProfilePage
+                      ? "text-blue-600 border-b-2 border-blue-600"
+                      : "text-slate-700 hover:text-blue-600"
                   }`}
                 >
                   Shop Profile
                 </button>
                 <button
-                  onClick={() => console.log('Manage bookings')}
+                  onClick={() => console.log("Manage bookings")}
                   className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
                 >
                   Bookings
@@ -124,7 +123,7 @@ export default function NavBar() {
             {/* Common authenticated links */}
             {!isHomePage && (
               <button
-                onClick={() => router.push('/')}
+                onClick={() => router.push("/")}
                 className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
               >
                 Home
@@ -158,10 +157,14 @@ export default function NavBar() {
             {/* User Avatar/Menu */}
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
-                {user.first_name?.charAt(0) || user.email?.charAt(0).toUpperCase() || 'U'}
+                {user.first_name?.charAt(0) ||
+                  user.email?.charAt(0).toUpperCase() ||
+                  "U"}
               </div>
               <span className="text-sm font-medium text-slate-700">
-                {user.first_name ? `${user.first_name} ${user.last_name}` : user.email}
+                {user.first_name
+                  ? `${user.first_name} ${user.last_name}`
+                  : user.email}
               </span>
             </div>
 
@@ -205,13 +208,13 @@ export default function NavBar() {
             </>
           ) : (
             <button
-              onClick={() => router.push('/')}
+              onClick={() => router.push("/")}
               className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
             >
               Home
             </button>
           )}
-          
+
           <button
             onClick={handleListGarage}
             className="text-slate-700 hover:text-blue-600 font-medium transition-colors cursor-pointer"
@@ -245,7 +248,10 @@ export default function NavBar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <div className="flex items-center cursor-pointer" onClick={() => router.push('/')}>
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => router.push("/")}
+            >
               <img
                 src="/logo.png"
                 alt="MechanicsMatch Logo"
@@ -272,9 +278,10 @@ export default function NavBar() {
           </div>
 
           {/* Route indicator for development (remove in production) */}
-          {process.env.NODE_ENV === 'development' && (
+          {process.env.NODE_ENV === "development" && (
             <div className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded text-center">
-              Current route: {pathname} | User type: {user?.user_type || 'Not authenticated'}
+              Current route: {pathname} | User type:{" "}
+              {user?.user_type || "Not authenticated"}
             </div>
           )}
         </div>
