@@ -96,7 +96,7 @@ export default function CustomerDashboard() {
       ...carData,
     };
 
-    const insertedCar = await addCar(newCar, user?.id || "");
+    const insertedCar = await addCar(newCar);
 
     if (insertedCar) {
       setCars([...cars, newCar]);
