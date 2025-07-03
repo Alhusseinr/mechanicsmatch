@@ -1,18 +1,19 @@
-'use client'
+"use client";
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Session, User } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase';
+import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Session, User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase";
 
 // Custom user type that includes data from public.users
 interface CustomUser extends User {
-  user_type?: 'customer' | 'mechanic';
+  user_type?: "customer" | "mechanic";
   first_name?: string;
   last_name?: string;
   phone?: string;
   is_verified?: boolean;
   cars?: Car[];
+  appointments?: Booking[];
 }
 
 interface Car {
@@ -26,14 +27,34 @@ interface Car {
   updated_at: string;
 }
 
-type AuthContextType = {
-  user: CustomUser | null
-  session: Session | null
-  loading: boolean
-  signOut: () => Promise<void>
-  login: (email: string, password: string) => Promise<any | null>
-  refreshUserProfile: () => Promise<void>
+interface Booking {
+  id: string;
+  shop_name: string;
+  customer_id: string;
+  shop_id: string;
+  service_id: string;
+  appointment_date: string;
+  appointment_time: string;
+  status: "pending" | "confirmed" | "in_progress" | "completed" | "cancelled";
+  payment_status: "pending" | "paid" | "refunded";
+  vehicle_make: string;
+  vehicle_model: string;
+  vehicle_year: number;
+  problem_description?: string;
+  special_instructions?: string;
+  estimated_cost?: number;
+  final_cost?: number;
+  notes?: string;
 }
+
+type AuthContextType = {
+  user: CustomUser | null;
+  session: Session | null;
+  loading: boolean;
+  signOut: () => Promise<void>;
+  login: (email: string, password: string) => Promise<any | null>;
+  refreshUserProfile: () => Promise<void>;
+};
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
@@ -41,168 +62,219 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   signOut: async () => {},
   login: async () => null,
-  refreshUserProfile: async () => {}
-})
+  refreshUserProfile: async () => {},
+});
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<CustomUser | null>(null);
-    const [session, setSession] = useState<Session | null>(null);
-    const [loading, setLoading] = useState(true);
-    const router = useRouter();
-    const supabase = createClient();
+  const [user, setUser] = useState<CustomUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const supabase = createClient();
 
-    // Function to fetch user profile from public.users
-    const fetchUserProfile = async (authUser: User): Promise<CustomUser | null> => {
-        try {
-            const { data: profile, error } = await supabase
-                .from('users')
-                .select('*')
-                .eq('id', authUser.id)
-                .single();
+  // Function to fetch user profile from public.users
+  const fetchUserProfile = async (
+    authUser: User
+  ): Promise<CustomUser | null> => {
+    try {
+      const { data: profile, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", authUser.id)
+        .single();
 
-            if (error) {
-                console.error('Error fetching user profile:', error);
-                return authUser; // Return basic auth user if profile fetch fails
-            }
+      if (error) {
+        console.error("Error fetching user profile:", error);
+        return authUser; // Return basic auth user if profile fetch fails
+      }
 
-            console.log('Fetched user profile:', profile);
+      console.log("Fetched user profile:", profile);
 
-            const { data: userCars, error: userCarsError } = await supabase
-                .from('cars')
-                .select('*')
-                .eq('user_id', authUser.id);
+      const { data: userCars, error: userCarsError } = await supabase
+        .from("cars")
+        .select("*")
+        .eq("user_id", authUser.id);
 
-            if (userCarsError) {
-                console.error('Error fetching user cars:', userCarsError);
-                return {
-                    ...authUser,
-                    user_type: profile.user_type,
-                    cars: []
-                };
-            }
+      if (userCarsError) {
+        console.error("Error fetching user cars:", userCarsError);
+      }
 
-            console.log('Fetched user cars:', userCars);
+      const { data: customerAppointments, error: customerAppointmentsError } =
+        await supabase
+          .from("bookings")
+          .select("*")
+          .eq("customer_id", authUser.id);
 
-            // Merge auth.users data with public.users data
-            return {
-                ...authUser,
-                user_type: profile.user_type,
-                first_name: profile.first_name,
-                last_name: profile.last_name,
-                phone: profile.phone,
-                is_verified: profile.is_verified,
-                cars: userCars || []
-            };
-        } catch (error) {
-            console.error('Error fetching user profile:', error);
-            return authUser; // Return basic auth user if error occurs
-        }
-    };
+      if (customerAppointmentsError) {
+        console.error(
+          "Error fetching customer appointments:",
+          customerAppointmentsError
+        );
+      }
 
-    // Function to refresh user profile (useful after profile updates)
-    const refreshUserProfile = async () => {
-        if (session?.user) {
-            const updatedUser = await fetchUserProfile(session.user);
-            setUser(updatedUser);
-        }
-    };
+      if (customerAppointments) {
+        customerAppointments.forEach(async (appointment) => {
+          const { data: shop, error: shopError } = await supabase
+            .from("shops")
+            .select("*")
+            .eq("id", appointment.shop_id)
+            .single();
 
-    useEffect(() => {
-        // Get initial session
-        supabase.auth.getSession().then(async ({ data: { session } }) => {
-            setSession(session);
-            
-            if (session?.user) {
-                const userWithProfile = await fetchUserProfile(session.user);
-                setUser(userWithProfile);
-            } else {
-                setUser(null);
-            }
-            
-            setLoading(false);
+          if (shopError) {
+            console.error("Error fetching shop details:", shopError);
+          }
+
+          appointment.shop_name = shop?.name || "";
+
+          const { data: service, error: serviceError } = await supabase
+            .from("services")
+            .select("*")
+            .eq("id", appointment.service_id)
+            .single();
+
+          if (serviceError) {
+            console.error("Error fetching service details:", serviceError);
+          }
+
+          appointment.service_id = service?.name || "";
+
+          const apptTime = new Date(
+            `1970-01-01T${appointment.appointment_time}`
+          );
+          appointment.appointment_time = apptTime.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
         });
+      }
 
-        // Listen for auth changes
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
-            setSession(session);
-            
-            if (session?.user) {
-                const userWithProfile = await fetchUserProfile(session.user);
-                setUser(userWithProfile);
-                
-                // Handle redirects based on auth state and user type
-                if (event === 'SIGNED_IN' && userWithProfile?.user_type) {
-                    if (userWithProfile.user_type === 'mechanic') {
-                        router.push('/shop/dashboard');
-                    } else {
-                        router.push('/customer/dashboard');
-                    }
-                }
-            } else {
-                setUser(null);
-                if (event === 'SIGNED_OUT') {
-                    router.push('/login');
-                }
-            }
-            
-            setLoading(false);
-        });
+      console.log("Fetched user cars:", userCars);
+      console.log("Fetched customer appointments:", customerAppointments);
 
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, [supabase, router]);
-
-    const login = async (email: string, password: string) => {
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            }); 
-
-            if (error && error.message.includes("Email not confirmed")) {
-                console.warn('Email not confirmed:', error);
-                throw error;
-            }
-
-            // The user profile will be fetched automatically by the auth state change listener
-            return data;
-        } catch (error) {
-            console.error('Login failed:', error);
-            throw error;
-        }
+      // Merge auth.users data with public.users data
+      return {
+        ...authUser,
+        user_type: profile.user_type,
+        first_name: profile.first_name,
+        last_name: profile.last_name,
+        phone: profile.phone,
+        is_verified: profile.is_verified,
+        cars: userCars || [],
+        appointments: customerAppointments || [],
+      };
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      return authUser; // Return basic auth user if error occurs
     }
+  };
 
-    const signOut = async () => {
-        try {
-            const { error } = await supabase.auth.signOut();
-            if (error) {
-                console.error('Sign out error:', error);
-                throw error;
-            }
-            setUser(null);
-            setSession(null);
-            router.push('/login');
-        } catch (error) {
-            console.error('Sign out failed:', error);
-            throw error;
-        }
+  // Function to refresh user profile (useful after profile updates)
+  const refreshUserProfile = async () => {
+    if (session?.user) {
+      const updatedUser = await fetchUserProfile(session.user);
+      setUser(updatedUser);
     }
+  };
 
-    return (
-        <AuthContext.Provider value={{ 
-            user, 
-            session, 
-            loading, 
-            signOut, 
-            login, 
-            refreshUserProfile 
-        }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      setSession(session);
+
+      if (session?.user) {
+        const userWithProfile = await fetchUserProfile(session.user);
+        setUser(userWithProfile);
+      } else {
+        setUser(null);
+      }
+
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session);
+
+      if (session?.user) {
+        const userWithProfile = await fetchUserProfile(session.user);
+        setUser(userWithProfile);
+
+        // Handle redirects based on auth state and user type
+        if (event === "SIGNED_IN" && userWithProfile?.user_type) {
+          if (userWithProfile.user_type === "mechanic") {
+            router.push("/shop/dashboard");
+          } else {
+            router.push("/customer/dashboard");
+          }
+        }
+      } else {
+        setUser(null);
+        if (event === "SIGNED_OUT") {
+          router.push("/login");
+        }
+      }
+
+      setLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase, router]);
+
+  const login = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error && error.message.includes("Email not confirmed")) {
+        console.warn("Email not confirmed:", error);
+        throw error;
+      }
+
+      // The user profile will be fetched automatically by the auth state change listener
+      return data;
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Sign out error:", error);
+        throw error;
+      }
+      setUser(null);
+      setSession(null);
+      router.push("/login");
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      throw error;
+    }
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        loading,
+        signOut,
+        login,
+        refreshUserProfile,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
