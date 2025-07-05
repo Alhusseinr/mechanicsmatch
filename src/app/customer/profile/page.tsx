@@ -4,13 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserProfile } from '@/hooks/useUserProfile';
-
-interface ProfileFormData {
-  first_name: string;
-  last_name: string;
-  phone: string;
-  user_type: 'customer' | 'mechanic';
-}
+import { ProfileFormData } from '@/lib/types';
 
 export default function CompleteProfilePage() {
   const { user, session, loading: authLoading } = useAuth();

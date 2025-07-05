@@ -1,6 +1,6 @@
 "use client";
 
-import LoginPage from "@/components/ui/LoginPage";
+import LoginPage from "./_components/LoginPage";
 import { Suspense } from "react";
 
 
