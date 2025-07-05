@@ -1,18 +1,7 @@
 'use client';
 
+import { AddCarModalProps } from "@/lib/types";
 import React from "react";
-
-interface AddCarModalProps {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (carData: {
-    car_make: string;
-    car_model: string;
-    car_trim: string;
-    car_year: number;
-    car_license_plate?: string;
-  }) => void;
-}
 
 export default function AddCarModal({ open, onClose, onSubmit }: AddCarModalProps) {
   if (!open) return null;

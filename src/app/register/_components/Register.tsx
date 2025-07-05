@@ -3,20 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
-
-// Types
-interface RegisterFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  phone: string;
-  userType: "customer" | "mechanic";
-  shopName?: string;
-  businessLicense?: string;
-  agreeToTerms: boolean;
-}
+import { RegisterFormData } from "@/lib/types";
 
 // Register Component
 export default function RegisterForm() {

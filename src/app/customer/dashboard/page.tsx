@@ -7,54 +7,11 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import DashboardLayout from "@/components/layouts/Dashboard";
 import { randomUUID } from "crypto";
 import { useAddCar } from "@/hooks/useAddCar";
-import AddCarModal from "@/components/ui/AddCarModal";
-import CustomerCars from "@/components/ui/CustomerCar";
+import AddCarModal from "./_components/AddCarModal";
+import CustomerCars from "./_components/CustomerCar";
 import { useDeleteCar } from "@/hooks/useDeleteCar";
 import Loader from "@/components/ui/Loader";
-
-// Your existing interfaces and mock data remain the same
-// interface Vehicle {
-//   id: string;
-//   make: string;
-//   model: string;
-//   trim: string;
-//   year: string;
-//   vin?: string;
-//   licensePlate?: string;
-//   color?: string;
-//   mileage?: number;
-//   lastService?: string;
-//   photo?: string;
-// }
-
-interface Booking {
-  id: string;
-  customer_id: string;
-  shop_name: string;
-  shop_id: string;
-  service_id: string;
-  appointment_date: string;
-  appointment_time: string;
-  status: "pending" | "confirmed" | "in_progress" | "completed" | "cancelled";
-  payment_status: "pending" | "paid" | "refunded";
-  vehicle_make: string;
-  vehicle_model: string;
-  vehicle_year: number;
-  problem_description?: string;
-  special_instructions?: string;
-  estimated_cost?: number;
-  final_cost?: number;
-  notes?: string;
-}
-
-interface Car {
-  id: string;
-  car_make: string;
-  car_model: string;
-  car_trim: string;
-  car_year: number;
-  car_license_plate: string;
-}
+import { Car, Booking } from "@/lib/types";
 
 export default function CustomerDashboard() {
   const { user, loading } = useAuth();
@@ -341,7 +298,7 @@ export default function CustomerDashboard() {
         {upcomingBookings.length > 0 && (
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 mb-8">
             <h3 className="text-xl font-bold text-slate-900 mb-6">
-              Upcoming Appointments
+              Your Upcoming Appointments
             </h3>
             <div className="space-y-4">
               {upcomingBookings.map((booking) => (
@@ -389,7 +346,7 @@ export default function CustomerDashboard() {
         {completedBookings.length > 0 ? (
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
             <h3 className="text-xl font-bold text-slate-900 mb-6">
-              Recent Activity
+              Past Services
             </h3>
             <div className="space-y-4">
               {completedBookings.slice(0, 3).map((booking) => (

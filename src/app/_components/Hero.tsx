@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import Search from "./Search";
+import Search from "../../components/ui/Search";
 
 
 

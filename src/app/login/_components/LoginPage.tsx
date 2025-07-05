@@ -3,13 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-
-interface LoginFormData {
-  email: string;
-  password: string;
-  userType: "customer" | "mechanic";
-  rememberMe: boolean;
-}
+import { LoginFormData } from "@/lib/types";
 
 export default function LoginPage() {
   const { user, loading, login } = useAuth();

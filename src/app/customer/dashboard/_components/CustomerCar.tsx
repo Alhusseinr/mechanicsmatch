@@ -1,21 +1,7 @@
 "use client";
 
+import { CustomerCarsProps } from "@/lib/types";
 import React from "react";
-
-interface Car {
-  id: string;
-  car_make: string;
-  car_model: string;
-  car_trim: string;
-  car_year: number;
-  car_license_plate: string;
-}
-
-interface CustomerCarsProps {
-  cars: Car[];
-  onAddCar: () => void; // Add this prop
-  onDeleteCar?: (id: string) => void; // Add this prop
-}
 
 export default function CustomerCars({
   cars,
@@ -25,7 +11,7 @@ export default function CustomerCars({
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 mb-8">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-slate-900">My Cars</h3>
+        <h3 className="text-xl font-bold text-slate-900">Your Cars</h3>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {cars.map((car) => (
