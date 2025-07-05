@@ -10,6 +10,7 @@ import { useAddCar } from "@/hooks/useAddCar";
 import AddCarModal from "@/components/ui/AddCarModal";
 import CustomerCars from "@/components/ui/CustomerCar";
 import { useDeleteCar } from "@/hooks/useDeleteCar";
+import Loader from "@/components/ui/Loader";
 
 // Your existing interfaces and mock data remain the same
 // interface Vehicle {
@@ -56,20 +57,18 @@ interface Car {
 }
 
 export default function CustomerDashboard() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [cars, setCars] = useState<Car[]>([]);
   const [showAddCar, setShowAddCar] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
 
   console.log("User in dashboard:", user);
 
-  const { addCar, loading, error } = useAddCar(user?.id || ""); // Pass user ID if available
+  const { addCar, error } = useAddCar(user?.id || ""); // Pass user ID if available
   const { deleteCar } = useDeleteCar(); // Assuming you have a deleteCar function
 
   const upcomingBookings = bookings.filter((b) => b.status === "pending");
-  const completedBookings = bookings.filter(
-    (b) => b.status === "completed"
-  );
+  const completedBookings = bookings.filter((b) => b.status === "completed");
 
   useEffect(() => {
     if (user?.cars) {
@@ -106,7 +105,7 @@ export default function CustomerDashboard() {
     }
   };
 
-   const handleDeleteCar = async (carId: string) => {
+  const handleDeleteCar = async (carId: string) => {
     const success = await deleteCar(carId);
     if (success) {
       setCars((prev) => prev.filter((car) => car.id !== carId));
@@ -128,11 +127,17 @@ export default function CustomerDashboard() {
     ));
   };
 
+  if (loading) {
+    return (
+      <Loader loading={loading} />
+    );
+  }
+
   return (
     <DashboardLayout title="" subtitle="">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
             <div className="flex items-center justify-between">
               <div>
@@ -240,7 +245,7 @@ export default function CustomerDashboard() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -354,7 +359,8 @@ export default function CustomerDashboard() {
                       </div>
                       <div className="text-sm text-slate-600">
                         {booking.shop_name} • {booking.appointment_time} •{" "}
-                        {booking.vehicle_make} {booking.vehicle_model} •{" "}
+                        {booking.vehicle_make} {booking.vehicle_model} • $
+                        {booking.final_cost}
                       </div>
                     </div>
                   </div>
@@ -426,4 +432,3 @@ export default function CustomerDashboard() {
     </DashboardLayout>
   );
 }
-

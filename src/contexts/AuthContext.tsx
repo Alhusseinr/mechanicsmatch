@@ -115,40 +115,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (customerAppointments) {
-        customerAppointments.forEach(async (appointment) => {
-          const { data: shop, error: shopError } = await supabase
-            .from("shops")
-            .select("*")
-            .eq("id", appointment.shop_id)
-            .single();
+        await Promise.all(
+          customerAppointments.map(async (appointment) => {
+            const { data: shop, error: shopError } = await supabase
+              .from("shops")
+              .select("*")
+              .eq("id", appointment.shop_id)
+              .single();
 
-          if (shopError) {
-            console.error("Error fetching shop details:", shopError);
-          }
+            if (shopError) {
+              console.error("Error fetching shop details:", shopError);
+            }
 
-          appointment.shop_name = shop?.name || "";
+            appointment.shop_name = shop?.name || "";
 
-          const { data: service, error: serviceError } = await supabase
-            .from("services")
-            .select("*")
-            .eq("id", appointment.service_id)
-            .single();
+            const { data: service, error: serviceError } = await supabase
+              .from("services")
+              .select("*")
+              .eq("id", appointment.service_id)
+              .single();
 
-          if (serviceError) {
-            console.error("Error fetching service details:", serviceError);
-          }
+            if (serviceError) {
+              console.error("Error fetching service details:", serviceError);
+            }
 
-          appointment.service_id = service?.name || "";
+            appointment.service_id = service?.name || "";
 
-          const apptTime = new Date(
-            `1970-01-01T${appointment.appointment_time}`
-          );
-          appointment.appointment_time = apptTime.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          });
-        });
+            const apptTime = new Date(
+              `1970-01-01T${appointment.appointment_time}`
+            );
+            appointment.appointment_time = apptTime.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            });
+          })
+        );
       }
 
       console.log("Fetched user cars:", userCars);
@@ -183,44 +185,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Get initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
-
       if (session?.user) {
         const userWithProfile = await fetchUserProfile(session.user);
         setUser(userWithProfile);
       } else {
         setUser(null);
       }
-
-      setLoading(false);
     });
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log("🔍 Auth state changed:", _event);
+      console.log("🔍 New session:", !!session);
+
       setSession(session);
 
-      if (session?.user) {
+      if (session?.user){
         const userWithProfile = await fetchUserProfile(session.user);
         setUser(userWithProfile);
 
-        // Handle redirects based on auth state and user type
-        if (event === "SIGNED_IN" && userWithProfile?.user_type) {
+        if (_event === "SIGNED_IN" && userWithProfile?.user_type) {
           if (userWithProfile.user_type === "mechanic") {
             router.push("/shop/dashboard");
           } else {
             router.push("/customer/dashboard");
           }
         }
-      } else {
-        setUser(null);
-        if (event === "SIGNED_OUT") {
+
+        if (_event === "SIGNED_OUT") {
+          setUser(null);
           router.push("/login");
         }
+      } else {
+        setUser(null);
       }
-
-      setLoading(false);
     });
+
+    setLoading(false);
 
     return () => {
       subscription.unsubscribe();
@@ -248,6 +251,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
+    console.log("🔍 Signing out...");
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
@@ -256,7 +260,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setUser(null);
       setSession(null);
-      router.push("/login");
+      router.push("/");
     } catch (error) {
       console.error("Sign out failed:", error);
       throw error;
