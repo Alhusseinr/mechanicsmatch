@@ -26,12 +26,6 @@ export default function CustomerCars({
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 mb-8">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-slate-900">My Cars</h3>
-        <button
-          onClick={onAddCar}
-          className="text-blue-600 hover:text-blue-800 font-medium"
-        >
-          Add Car
-        </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {cars.map((car) => (

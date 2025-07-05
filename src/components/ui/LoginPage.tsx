@@ -42,9 +42,6 @@ export default function LoginPage() {
       const redirectTo = searchParams.get("redirectTo");
       if (redirectTo) {
         router.push(redirectTo);
-      } else {
-        // Will be handled by auth context based on user type
-        router.push("/");
       }
     }
   }, [user, loading, router, searchParams]);
@@ -200,26 +197,13 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="text-center mb-8">
               <div className="flex items-center justify-center mb-6">
-                <svg
-                  width="60"
-                  height="60"
-                  viewBox="0 0 100 100"
+                <img
+                  src="/logo.png"
+                  alt="MechanicsMatch Logo"
+                  width={200}
+                  height={200}
                   className="mr-3"
-                >
-                  <path
-                    d="M20 15 L20 35 L15 40 L15 50 L20 55 L20 75 L30 85 L40 75 L40 70 L35 65 L35 45 L40 40 L40 35 L30 25 Z"
-                    fill="#1e40af"
-                  />
-                  <path
-                    d="M80 15 L80 35 L85 40 L85 50 L80 55 L80 75 L70 85 L60 75 L60 70 L65 65 L65 45 L60 40 L60 35 L70 25 Z"
-                    fill="#ea580c"
-                  />
-                  <rect x="42" y="42" width="16" height="16" fill="#1e40af" />
-                  <rect x="45" y="45" width="10" height="10" fill="#ea580c" />
-                </svg>
-                <h2 className="text-3xl font-bold text-slate-900">
-                  MechanicsMatch
-                </h2>
+                />
               </div>
             </div>
             {/* Email */}
