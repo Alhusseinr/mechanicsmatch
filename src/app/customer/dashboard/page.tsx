@@ -64,38 +64,23 @@ export default function CustomerDashboard() {
     }
   };
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <svg
-        key={i}
-        className={`w-4 h-4 ${
-          i < rating ? "text-yellow-400" : "text-gray-300"
-        }`}
-        fill="currentColor"
-        viewBox="0 0 20 20"
-      >
-        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-      </svg>
-    ));
-  };
-
   if (loading) {
     return <Loader loading={loading} />;
   }
 
   return (
     <DashboardLayout title="" subtitle="">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+        {/* Quick Actions - Mobile Responsive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <button
             onClick={() => console.log("Book new service")}
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 sm:w-6 sm:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -108,9 +93,9 @@ export default function CustomerDashboard() {
                   />
                 </svg>
               </div>
-              <div className="text-left">
-                <h3 className="font-semibold text-lg">Book Service</h3>
-                <p className="text-blue-100 text-sm">
+              <div className="text-left min-w-0">
+                <h3 className="font-semibold text-base sm:text-lg truncate">Book Service</h3>
+                <p className="text-blue-100 text-xs sm:text-sm hidden sm:block">
                   Schedule a new appointment
                 </p>
               </div>
@@ -119,12 +104,12 @@ export default function CustomerDashboard() {
 
           <button
             onClick={() => console.log("Find mechanics")}
-            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 sm:w-6 sm:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -137,9 +122,9 @@ export default function CustomerDashboard() {
                   />
                 </svg>
               </div>
-              <div className="text-left">
-                <h3 className="font-semibold text-lg">Find Mechanics</h3>
-                <p className="text-green-100 text-sm">
+              <div className="text-left min-w-0">
+                <h3 className="font-semibold text-base sm:text-lg truncate">Find Mechanics</h3>
+                <p className="text-green-100 text-xs sm:text-sm hidden sm:block">
                   Discover trusted professionals
                 </p>
               </div>
@@ -148,12 +133,12 @@ export default function CustomerDashboard() {
 
           <button
             onClick={() => setShowAddCar(true)}
-            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg sm:col-span-2 lg:col-span-1"
           >
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 sm:w-6 sm:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -166,9 +151,9 @@ export default function CustomerDashboard() {
                   />
                 </svg>
               </div>
-              <div className="text-left">
-                <h3 className="font-semibold text-lg">Add Vehicle</h3>
-                <p className="text-purple-100 text-sm">
+              <div className="text-left min-w-0">
+                <h3 className="font-semibold text-base sm:text-lg truncate">Add Vehicle</h3>
+                <p className="text-purple-100 text-xs sm:text-sm hidden sm:block">
                   Register a new vehicle
                 </p>
               </div>
@@ -176,16 +161,17 @@ export default function CustomerDashboard() {
           </button>
         </div>
 
-        <AppointmentsList 
-          appointments={appointments} 
-        />
+        {/* Appointments List - Component handles its own mobile responsiveness */}
+        <AppointmentsList appointments={appointments} />
 
+        {/* Customer Cars - Component handles its own mobile responsiveness */}
         <CustomerCars
           cars={cars}
           onAddCar={() => setShowAddCar(true)}
           onDeleteCar={handleDeleteCar}
         />
 
+        {/* Add Car Modal */}
         <AddCarModal
           open={showAddCar}
           onClose={() => setShowAddCar(false)}
