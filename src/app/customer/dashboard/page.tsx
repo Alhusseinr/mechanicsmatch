@@ -71,45 +71,26 @@ export default function CustomerDashboard() {
   return (
     <DashboardLayout title="" subtitle="">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
-        {/* Quick Actions - Mobile Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
-          <button
-            onClick={() => console.log("Book new service")}
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-              </div>
-              <div className="text-left min-w-0">
-                <h3 className="font-semibold text-base sm:text-lg truncate">Book Service</h3>
-                <p className="text-blue-100 text-xs sm:text-sm hidden sm:block">
-                  Schedule a new appointment
-                </p>
-              </div>
+        {/* Welcome Section for better page structure */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-4 sm:mb-0">
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+                Welcome back{user?.first_name ? `, ${user.first_name}` : ""}!
+              </h1>
+              <p className="text-slate-600">
+                Manage your vehicles and service appointments in one place
+              </p>
             </div>
-          </button>
 
-          <button
-            onClick={() => console.log("Find mechanics")}
-            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+            {/* Compact Action Buttons */}
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => console.log("Find mechanics")}
+                className="flex items-center space-x-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+              >
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -121,24 +102,15 @@ export default function CustomerDashboard() {
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-              </div>
-              <div className="text-left min-w-0">
-                <h3 className="font-semibold text-base sm:text-lg truncate">Find Mechanics</h3>
-                <p className="text-green-100 text-xs sm:text-sm hidden sm:block">
-                  Discover trusted professionals
-                </p>
-              </div>
-            </div>
-          </button>
+                <span className="hidden sm:inline">Find Shops</span>
+              </button>
 
-          <button
-            onClick={() => setShowAddCar(true)}
-            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg sm:col-span-2 lg:col-span-1"
-          >
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+              <button
+                onClick={() => console.log("Book service")}
+                className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 text-sm"
+              >
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -147,22 +119,19 @@ export default function CustomerDashboard() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-              </div>
-              <div className="text-left min-w-0">
-                <h3 className="font-semibold text-base sm:text-lg truncate">Add Vehicle</h3>
-                <p className="text-purple-100 text-xs sm:text-sm hidden sm:block">
-                  Register a new vehicle
-                </p>
-              </div>
+                <span>Book Service</span>
+              </button>
             </div>
-          </button>
+          </div>
         </div>
 
         {/* Appointments List - Component handles its own mobile responsiveness */}
-        <AppointmentsList appointments={appointments} />
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 mb-6">
+          <AppointmentsList appointments={appointments} />
+        </div>
 
         {/* Customer Cars - Component handles its own mobile responsiveness */}
         <CustomerCars

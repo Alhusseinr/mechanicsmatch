@@ -16,10 +16,9 @@ export default function AppointmentsList({ appointments }: AppointmentsProps) {
   const [invoiceModal, setInvoiceModal] = useState({ open: false, booking: null as Booking | null });
 
   // View mode state
-  const [viewMode, setViewMode] = useState<ViewMode>('sections');
   const [expandedSections, setExpandedSections] = useState({
     active: true,
-    completed: true,
+    completed: false,
     cancelled: false
   });
 
@@ -380,7 +379,7 @@ export default function AppointmentsList({ appointments }: AppointmentsProps) {
   return (
     <>
       {/* Overview Header */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 mb-6">
+      <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">Your Appointments</h2>
