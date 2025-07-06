@@ -39,9 +39,6 @@ export default function CustomerCars({
                 <div className="font-semibold text-slate-900">
                   {car.car_year} {car.car_make} {car.car_model} {car.car_trim}
                 </div>
-                <div className="text-sm text-slate-600">
-                  {car.car_license_plate}
-                </div>
               </div>
               {onDeleteCar && (
                 <button

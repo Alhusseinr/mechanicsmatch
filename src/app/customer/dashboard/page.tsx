@@ -2,30 +2,25 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Database } from "@/lib/database.types";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import DashboardLayout from "@/components/layouts/Dashboard";
-import { randomUUID } from "crypto";
 import { useAddCar } from "@/hooks/useAddCar";
 import AddCarModal from "./_components/AddCarModal";
 import CustomerCars from "./_components/CustomerCar";
 import { useDeleteCar } from "@/hooks/useDeleteCar";
 import Loader from "@/components/ui/Loader";
 import { Car, Booking } from "@/lib/types";
+import AppointmentsList from "./_components/AppointmentsList";
 
 export default function CustomerDashboard() {
   const { user, loading } = useAuth();
   const [cars, setCars] = useState<Car[]>([]);
   const [showAddCar, setShowAddCar] = useState(false);
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [appointments, setAppointments] = useState<Booking[]>([]);
 
   console.log("User in dashboard:", user);
 
   const { addCar, error } = useAddCar(user?.id || ""); // Pass user ID if available
   const { deleteCar } = useDeleteCar(); // Assuming you have a deleteCar function
-
-  const upcomingBookings = bookings.filter((b) => b.status === "pending");
-  const completedBookings = bookings.filter((b) => b.status === "completed");
 
   useEffect(() => {
     if (user?.cars) {
@@ -35,9 +30,9 @@ export default function CustomerDashboard() {
     }
 
     if (user?.appointments) {
-      setBookings(user.appointments);
+      setAppointments(user.appointments);
     } else {
-      setBookings([]);
+      setAppointments([]);
     }
   }, [user?.cars, user?.appointments]);
 
@@ -85,125 +80,12 @@ export default function CustomerDashboard() {
   };
 
   if (loading) {
-    return (
-      <Loader loading={loading} />
-    );
+    return <Loader loading={loading} />;
   }
 
   return (
     <DashboardLayout title="" subtitle="">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Quick Stats */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-600 text-sm font-medium">
-                  Active Cars
-                </p>
-                <p className="text-3xl font-bold text-slate-900">
-                  {cars.length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-600 text-sm font-medium">
-                  Total Bookings
-                </p>
-                <p className="text-3xl font-bold text-slate-900">
-                  {bookings.length}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-600 text-sm font-medium">
-                  Saved Shops
-                </p>
-                <p className="text-3xl font-bold text-slate-900">3</p>
-              </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-600 text-sm font-medium">
-                  Active Quotes
-                </p>
-                <p className="text-3xl font-bold text-slate-900">2</p>
-              </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-orange-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div> */}
-
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <button
@@ -294,92 +176,16 @@ export default function CustomerDashboard() {
           </button>
         </div>
 
-        {/* Upcoming Appointments */}
-        {upcomingBookings.length > 0 && (
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 mb-8">
-            <h3 className="text-xl font-bold text-slate-900 mb-6">
-              Your Upcoming Appointments
-            </h3>
-            <div className="space-y-4">
-              {upcomingBookings.map((booking) => (
-                <div
-                  key={booking.id}
-                  className="flex items-center justify-between p-4 bg-blue-50 rounded-xl"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold">
-                      {new Date(booking.appointment_date).getDate()}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-slate-900">
-                        {booking.service_id}
-                      </div>
-                      <div className="text-sm text-slate-600">
-                        {booking.shop_name} • {booking.appointment_time} •{" "}
-                        {booking.vehicle_make} {booking.vehicle_model} • $
-                        {booking.final_cost}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <button className="px-4 py-2 bg-white text-slate-700 rounded-lg hover:bg-slate-50 transition-colors font-medium">
-                      Reschedule
-                    </button>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <AppointmentsList 
+          appointments={appointments} 
+        />
 
-        {/* Recent Vehicles */}
         <CustomerCars
           cars={cars}
           onAddCar={() => setShowAddCar(true)}
           onDeleteCar={handleDeleteCar}
         />
 
-        {/* Recent Activity */}
-        {completedBookings.length > 0 ? (
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-            <h3 className="text-xl font-bold text-slate-900 mb-6">
-              Past Services
-            </h3>
-            <div className="space-y-4">
-              {completedBookings.slice(0, 3).map((booking) => (
-                <div
-                  key={booking.id}
-                  className="flex items-center justify-between p-4 bg-slate-50 rounded-xl"
-                >
-                  <div>
-                    <div className="font-semibold text-slate-900">
-                      {/* {booking.serviceName} */}
-                    </div>
-                    <div className="text-sm text-slate-600">
-                      {booking.shop_id} • {booking.appointment_date} • $
-                      {booking.final_cost}
-                    </div>
-                  </div>
-                  {/* <div className="flex items-center space-x-3">
-                  {booking.rating && (
-                    <div className="flex">{renderStars(booking.rating)}</div>
-                  )}
-                  {!booking.reviewLeft && booking.rating && (
-                    <button className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium">
-                      Leave Review
-                    </button>
-                  )}
-                </div> */}
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : null}
-
-        {/* Add Car Modal */}
         <AddCarModal
           open={showAddCar}
           onClose={() => setShowAddCar(false)}
