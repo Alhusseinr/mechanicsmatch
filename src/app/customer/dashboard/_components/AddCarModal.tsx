@@ -1,9 +1,134 @@
-'use client';
+"use client";
 
-import { AddCarModalProps } from "@/lib/types";
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useVehicleData } from "@/lib/vehicleData";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 
-export default function AddCarModal({ open, onClose, onSubmit }: AddCarModalProps) {
+interface AddCarModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (carData: {
+    car_make: string;
+    car_model: string;
+    car_trim: string;
+    car_year: number;
+    car_license_plate?: string;
+  }) => void;
+}
+
+export default function AddCarModal({
+  open,
+  onClose,
+  onSubmit,
+}: AddCarModalProps) {
+  // Use the vehicle data hook with API integration
+  const {
+    makes,
+    models,
+    trims,
+    loading,
+    errors,
+    loadModels,
+    loadTrims,
+    getYears,
+  } = useVehicleData();
+
+  // Form state
+  const [selectedMake, setSelectedMake] = useState("");
+  const [selectedMakeObj, setSelectedMakeObj] = useState<any>(null);
+  const [selectedModel, setSelectedModel] = useState("");
+  const [selectedModelObj, setSelectedModelObj] = useState<any>(null);
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedTrim, setSelectedTrim] = useState("");
+  const [customTrim, setCustomTrim] = useState("");
+  const [licensePlate, setLicensePlate] = useState("");
+  const [years] = useState(getYears());
+
+  // Handle make selection
+  const handleMakeChange = (makeId: string) => {
+    setSelectedMake(makeId);
+    const makeObj = makes.find((m) => m.id === makeId);
+    setSelectedMakeObj(makeObj);
+
+    // Reset dependent fields
+    setSelectedModel("");
+    setSelectedModelObj(null);
+    setSelectedYear("");
+    setSelectedTrim("");
+    setCustomTrim("");
+  };
+
+  // Handle model selection
+  const handleModelChange = (modelId: string) => {
+    setSelectedModel(modelId);
+    const modelObj = models.find((m) => m.id === modelId);
+    setSelectedModelObj(modelObj);
+
+    // Only reset trim fields, keep the year
+    setSelectedTrim("");
+    setCustomTrim("");
+
+    // Load trims if we have all required data
+    if (selectedMakeObj && modelObj && selectedYear) {
+      loadTrims(selectedMakeObj.name, modelObj.name, parseInt(selectedYear));
+    }
+  };
+
+  // Handle year selection
+  const handleYearChange = (year: string) => {
+    setSelectedYear(year);
+    setSelectedTrim("");
+    setCustomTrim("");
+
+    // Load trims when year is selected (and we have make + model)
+    if (selectedMakeObj && selectedModelObj && year) {
+      loadTrims(selectedMakeObj.name, selectedModelObj.name, parseInt(year));
+    }
+  };
+
+  // Load models when make and year change
+  useEffect(() => {
+    if (selectedMakeObj && selectedYear) {
+      loadModels(selectedMakeObj.name, parseInt(selectedYear), true);
+    }
+  }, [selectedMakeObj, selectedYear]);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!open) {
+      setSelectedMake("");
+      setSelectedMakeObj(null);
+      setSelectedModel("");
+      setSelectedModelObj(null);
+      setSelectedYear("");
+      setSelectedTrim("");
+      setCustomTrim("");
+      setLicensePlate("");
+    }
+  }, [open]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedMakeObj || !selectedModelObj || !selectedYear) {
+      return;
+    }
+
+    // Use selected trim or custom trim
+    const finalTrim = selectedTrim || customTrim;
+    if (!finalTrim) {
+      return;
+    }
+
+    onSubmit({
+      car_make: selectedMakeObj.name,
+      car_model: selectedModelObj.name,
+      car_trim: finalTrim,
+      car_year: parseInt(selectedYear),
+      car_license_plate: licensePlate || undefined,
+    });
+  };
+
   if (!open) return null;
 
   return (
@@ -12,89 +137,191 @@ export default function AddCarModal({ open, onClose, onSubmit }: AddCarModalProp
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl p-6 max-w-md w-full"
+        className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-2xl font-bold text-slate-900 mb-6">
-          Add New Car
-        </h3>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.currentTarget);
-            onSubmit({
-              car_make: formData.get("make") as string,
-              car_model: formData.get("model") as string,
-              car_trim: formData.get("trim") as string,
-              car_year: Number(formData.get("year")),
-              car_license_plate: formData.get("licensePlate") as string,
-            });
-          }}
-        >
+        <h3 className="text-2xl font-bold text-slate-900 mb-6">Add New Car</h3>
+
+        <form onSubmit={handleSubmit}>
           <div className="space-y-4">
-            {/* ...inputs as before... */}
+            {/* Make Selection */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Make
+                Make *
               </label>
-              <input
-                name="make"
-                type="text"
-                required
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900"
-                placeholder="e.g., Toyota"
+              <CustomSelect
+                options={makes.map((make) => ({
+                  value: make.id,
+                  label: make.name,
+                }))}
+                value={selectedMake}
+                onChange={handleMakeChange}
+                placeholder={
+                  loading.makes ? "Loading makes..." : "Select a make"
+                }
+                disabled={loading.makes}
               />
+              {errors.makes && (
+                <p className="text-sm text-red-500 mt-1">{errors.makes}</p>
+              )}
+              {!loading.makes && makes.length > 0 && (
+                <p className="text-xs text-green-600 mt-1">
+                  ✓ {makes.length} makes loaded from NHTSA database
+                </p>
+              )}
             </div>
+
+            {/* Year Selection */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Model
+              <label
+                className={`block text-sm font-medium mb-2 ${
+                  !selectedMake ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
+                Year *
               </label>
-              <input
-                name="model"
-                type="text"
-                required
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900"
-                placeholder="e.g., Camry"
+              <CustomSelect
+                options={years.map((year) => ({
+                  value: year.toString(),
+                  label: year.toString(),
+                }))}
+                value={selectedYear}
+                onChange={handleYearChange}
+                placeholder={
+                  !selectedMake ? "Select make first" : "Select a year"
+                }
+                disabled={!selectedMake}
               />
             </div>
+
+            {/* Model Selection */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Trim
+              <label
+                className={`block text-sm font-medium mb-2 ${
+                  !selectedMake ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
+                Model *
               </label>
-              <input
-                name="trim"
-                type="text"
-                required
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900"
-                placeholder="e.g., LX"
+              <CustomSelect
+                options={models.map((model) => ({
+                  value: model.id,
+                  label: model.name,
+                }))}
+                value={selectedModel}
+                onChange={handleModelChange}
+                placeholder={
+                  !selectedMake
+                    ? "Select make first"
+                    : !selectedYear
+                    ? "Select year first"
+                    : loading.models
+                    ? "Loading models..."
+                    : models.length === 0
+                    ? "No models found - try a different year"
+                    : "Select a model"
+                }
+                disabled={!selectedMake || !selectedYear || loading.models}
               />
+              {errors.models && (
+                <p className="text-sm text-red-500 mt-1">{errors.models}</p>
+              )}
+
+              {/* Show API data source info */}
+              {selectedMake &&
+                selectedYear &&
+                !loading.models &&
+                models.length > 0 && (
+                  <p className="text-xs text-green-600 mt-1">
+                    ✓ {models.length} models loaded from NHTSA database
+                  </p>
+                )}
             </div>
+
+            {/* Trim Selection */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Year
+              <label
+                className={`block text-sm font-medium mb-2 ${
+                  !selectedModel ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
+                Trim *
               </label>
-              <input
-                name="year"
-                type="number"
-                required
-                min="1900"
-                max={new Date().getFullYear() + 1}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900"
-                placeholder="e.g., 2020"
-              />
+
+              {/* API Trims (if available) */}
+              {trims.length > 0 && (
+                <>
+                  <CustomSelect
+                    options={[
+                      { value: "", label: "Select a trim" },
+                      ...trims.map((trim) => ({ value: trim, label: trim })),
+                      { value: "custom", label: "Enter custom trim..." },
+                    ]}
+                    value={selectedTrim}
+                    onChange={setSelectedTrim}
+                    placeholder={
+                      loading.trims ? "Loading trims..." : "Select a trim"
+                    }
+                    disabled={!selectedModel || loading.trims}
+                  />
+                  {errors.trims && (
+                    <p className="text-sm text-red-500 mt-1">{errors.trims}</p>
+                  )}
+                  {!loading.trims && trims.length > 0 && (
+                    <p className="text-xs text-green-600 mt-1">
+                      ✓ {trims.length} trims loaded from NHTSA database
+                    </p>
+                  )}
+                </>
+              )}
+
+              {/* Custom Trim Input */}
+              {((trims.length === 0 && selectedModel && !loading.trims) ||
+                selectedTrim === "custom") && (
+                <div className={trims.length > 0 ? "mt-3" : ""}>
+                  {trims.length > 0 && (
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Custom Trim
+                    </label>
+                  )}
+                  <input
+                    type="text"
+                    value={customTrim}
+                    onChange={(e) => setCustomTrim(e.target.value)}
+                    required={!selectedTrim || selectedTrim === "custom"}
+                    disabled={!selectedModel}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 disabled:bg-slate-100 disabled:cursor-not-allowed"
+                    placeholder="e.g., LX, EX, Sport, Base"
+                  />
+                  {!loading.trims && trims.length > 0 && (
+                    <p className="text-xs text-green-600 mt-1">
+                      ✓ {trims.length}{" "}
+                      {trims.includes("Base") || trims.includes("LX")
+                        ? "common"
+                        : "verified"}{" "}
+                      trims available
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
+
+            {/* License Plate */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 License Plate (Optional)
               </label>
               <input
-                name="licensePlate"
                 type="text"
+                value={licensePlate}
+                onChange={(e) => setLicensePlate(e.target.value)}
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900"
                 placeholder="e.g., ABC 1234"
               />
             </div>
           </div>
+
+          {/* Action Buttons */}
           <div className="flex items-center space-x-4 mt-6">
             <button
               type="button"
@@ -105,9 +332,17 @@ export default function AddCarModal({ open, onClose, onSubmit }: AddCarModalProp
             </button>
             <button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300"
+              disabled={
+                !selectedMakeObj ||
+                !selectedModelObj ||
+                !selectedYear ||
+                (!selectedTrim && !customTrim) ||
+                loading.models ||
+                loading.trims
+              }
+              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-300 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300"
             >
-              Add Vehicle
+              {loading.models || loading.trims ? "Loading..." : "Add Vehicle"}
             </button>
           </div>
         </form>
