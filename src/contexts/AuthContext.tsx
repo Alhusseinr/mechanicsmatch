@@ -128,6 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
 
             appointment.shop_name = shop?.name || "";
+            appointment.shop = shop;
 
             const { data: service, error: serviceError } = await supabase
               .from("services")
