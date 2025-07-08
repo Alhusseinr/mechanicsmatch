@@ -195,6 +195,8 @@ export type PaymentStatus = 'pending' | 'paid' | 'refunded'
 //   updated_at: string
 // }
 
+
+
 export interface Booking {
   id: string;
   customer_id: string;
@@ -405,17 +407,27 @@ export interface MobileMenuProps {
 // =============================================================================
 
 export interface SearchFilters {
-  location: string
-  service: string
-  radius: number
-  rating: number
-  priceRange: [number, number]
+  location: string;
+  service: string;
+  radius?: number;
+  minRating?: number;
+  priceRange?: [number, number];
+  sortBy?: 'rating' | 'distance' | 'price' | 'reviews';
 }
 
 export interface SearchResult {
-  shops: Shop[]
-  total: number
-  filters: SearchFilters
+  shops: Shop[];
+  total: number;
+  hasMore?: boolean;
+  page?: number;
+  filters?: SearchFilters;
+}
+
+export interface UseSearchResult {
+  shops: Shop[];
+  total: number;
+  hasMore: boolean;
+  page: number;
 }
 
 // =============================================================================

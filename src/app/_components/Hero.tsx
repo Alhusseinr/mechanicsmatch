@@ -1,11 +1,28 @@
+// src/app/_components/Hero.tsx
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Search from "../../components/ui/Search";
 
-
-
 export default function Hero() {
+  const router = useRouter();
+
+  const handleSearch = (location: string, service: string) => {
+    // Build search parameters
+    const searchParams = new URLSearchParams();
+    
+    if (location.trim()) {
+      searchParams.set('location', location.trim());
+    }
+    
+    if (service && service !== 'all') {
+      searchParams.set('service', service);
+    }
+
+    // Navigate to search results
+    router.push(`/search?${searchParams.toString()}`);
+  };
 
   return (
     <section className="relative">
@@ -40,7 +57,7 @@ export default function Hero() {
             </p>
 
             {/* Search Section */}
-            <Search />
+            <Search onSearch={handleSearch} />
           </div>
         </div>
 
