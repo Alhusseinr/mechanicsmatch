@@ -275,15 +275,15 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         {/* Header */}
 
         {/* Register Form */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           {/* Show auth error */}
           {authError && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-700 text-sm">{authError}</p>
             </div>
           )}
@@ -305,7 +305,7 @@ export default function RegisterForm() {
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-slate-900 mb-2">
                   First Name
                 </label>
                 <input
@@ -314,10 +314,10 @@ export default function RegisterForm() {
                   onChange={(e) =>
                     handleInputChange("firstName", e.target.value)
                   }
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200 ${
                     errors.firstName
                       ? "border-red-300 bg-red-50"
-                      : "border-slate-200 bg-white"
+                      : "border-gray-300 bg-white"
                   }`}
                   placeholder="John"
                   autoComplete="given-name"
@@ -329,7 +329,7 @@ export default function RegisterForm() {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-slate-900 mb-2">
                   Last Name
                 </label>
                 <input
@@ -338,10 +338,10 @@ export default function RegisterForm() {
                   onChange={(e) =>
                     handleInputChange("lastName", e.target.value)
                   }
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200 ${
                     errors.lastName
                       ? "border-red-300 bg-red-50"
-                      : "border-slate-200 bg-white"
+                      : "border-gray-300 bg-white"
                   }`}
                   placeholder="Smith"
                   autoComplete="family-name"
@@ -354,17 +354,17 @@ export default function RegisterForm() {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-900 mb-2">
                 Email Address
               </label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200 ${
                   errors.email
                     ? "border-red-300 bg-red-50"
-                    : "border-slate-200 bg-white"
+                    : "border-gray-300 bg-white"
                 }`}
                 placeholder="john@example.com"
                 autoComplete="email"
@@ -376,17 +376,17 @@ export default function RegisterForm() {
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-900 mb-2">
                 Phone Number
               </label>
               <input
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => handleInputChange("phone", e.target.value)}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200 ${
                   errors.phone
                     ? "border-red-300 bg-red-50"
-                    : "border-slate-200 bg-white"
+                    : "border-gray-300 bg-white"
                 }`}
                 placeholder="(555) 123-4567"
                 autoComplete="tel"
@@ -400,7 +400,7 @@ export default function RegisterForm() {
             {formData.userType === "mechanic" && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-900 mb-2">
                     Shop Name
                   </label>
                   <input
@@ -409,10 +409,10 @@ export default function RegisterForm() {
                     onChange={(e) =>
                       handleInputChange("shopName", e.target.value)
                     }
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200 ${
                       errors.shopName
                         ? "border-red-300 bg-red-50"
-                        : "border-slate-200 bg-white"
+                        : "border-gray-300 bg-white"
                     }`}
                     placeholder="Elite Motor Works"
                     autoComplete="organization"
@@ -425,7 +425,7 @@ export default function RegisterForm() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-900 mb-2">
                     Business License (Optional)
                   </label>
                   <input
@@ -434,10 +434,10 @@ export default function RegisterForm() {
                     onChange={(e) =>
                       handleInputChange("businessLicense", e.target.value)
                     }
-                    className="w-full px-4 py-3 border border-slate-200 bg-white rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 bg-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200"
                     placeholder="License number"
                   />
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-slate-700">
                     This helps customers trust your services
                   </p>
                 </div>
@@ -446,7 +446,7 @@ export default function RegisterForm() {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-900 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -456,10 +456,10 @@ export default function RegisterForm() {
                   onChange={(e) =>
                     handleInputChange("password", e.target.value)
                   }
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 pr-12 ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200 pr-12 ${
                     errors.password
                       ? "border-red-300 bg-red-50"
-                      : "border-slate-200 bg-white"
+                      : "border-gray-300 bg-white"
                   }`}
                   placeholder="Create a strong password"
                   autoComplete="new-password"
@@ -545,7 +545,7 @@ export default function RegisterForm() {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-900 mb-2">
                 Confirm Password
               </label>
               <div className="relative">
@@ -555,10 +555,10 @@ export default function RegisterForm() {
                   onChange={(e) =>
                     handleInputChange("confirmPassword", e.target.value)
                   }
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 pr-12 ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200 pr-12 ${
                     errors.confirmPassword
                       ? "border-red-300 bg-red-50"
-                      : "border-slate-200 bg-white"
+                      : "border-gray-300 bg-white"
                   }`}
                   placeholder="Confirm your password"
                   autoComplete="new-password"
@@ -624,14 +624,14 @@ export default function RegisterForm() {
                   onChange={(e) =>
                     handleInputChange("agreeToTerms", e.target.checked)
                   }
-                  className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 mt-1"
+                  className="w-4 h-4 text-slate-900 border-slate-300 rounded focus:ring-slate-500 focus:ring-2 mt-1"
                 />
                 <span className="text-sm text-slate-600">
                   I agree to the{" "}
                   <button
                     type="button"
                     onClick={handleTermsClick}
-                    className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                    className="text-slate-900 hover:text-slate-700 font-medium transition-colors"
                   >
                     Terms of Service
                   </button>{" "}
@@ -639,7 +639,7 @@ export default function RegisterForm() {
                   <button
                     type="button"
                     onClick={handlePrivacyClick}
-                    className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                    className="text-slate-900 hover:text-slate-700 font-medium transition-colors"
                   >
                     Privacy Policy
                   </button>
@@ -656,7 +656,7 @@ export default function RegisterForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
@@ -691,10 +691,10 @@ export default function RegisterForm() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200" />
+                <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-slate-500">
+                <span className="px-2 bg-white text-slate-700">
                   Or sign up with
                 </span>
               </div>
@@ -704,7 +704,7 @@ export default function RegisterForm() {
               <button
                 type="button"
                 onClick={handleGoogleSignUp}
-                className="w-full inline-flex justify-center py-2 px-4 border border-slate-200 rounded-xl shadow-sm bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors"
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
@@ -729,7 +729,7 @@ export default function RegisterForm() {
 
               <button
                 type="button"
-                className="w-full inline-flex justify-center py-2 px-4 border border-slate-200 rounded-xl shadow-sm bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors"
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
               >
                 <svg
                   className="w-5 h-5"
@@ -749,7 +749,7 @@ export default function RegisterForm() {
               Already have an account?{" "}
               <button
                 onClick={handleSignInRedirect}
-                className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                className="text-slate-900 hover:text-slate-700 font-medium transition-colors"
               >
                 Sign in
               </button>

@@ -57,8 +57,8 @@ export default function CustomerDashboard() {
   return (
     <DashboardLayout title="" subtitle="">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
-        {/* Welcome Section for better page structure */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 mb-6 sm:mb-8">
+        {/* Welcome Section - Professional Enterprise Design */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
@@ -68,18 +68,24 @@ export default function CustomerDashboard() {
                 Manage your vehicles and service appointments in one place
               </p>
               {dataLoading && (
-                <p className="text-blue-600 text-sm mt-2">Loading your data...</p>
+                <p className="text-slate-700 text-sm mt-2 flex items-center">
+                  <svg className="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Loading your data...
+                </p>
               )}
               {dataError && (
                 <p className="text-red-600 text-sm mt-2">{dataError}</p>
               )}
             </div>
 
-            {/* Compact Action Buttons */}
+            {/* Professional Action Buttons */}
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => console.log("Find mechanics")}
-                className="flex items-center space-x-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+                className="flex items-center space-x-2 bg-white border border-gray-300 text-slate-700 px-4 py-2 rounded-lg font-semibold hover:bg-slate-50 transition-colors text-sm"
               >
                 <svg
                   className="w-4 h-4"
@@ -99,7 +105,7 @@ export default function CustomerDashboard() {
 
               <button
                 onClick={() => console.log("Book service")}
-                className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 text-sm"
+                className="flex items-center space-x-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"
               >
                 <svg
                   className="w-4 h-4"

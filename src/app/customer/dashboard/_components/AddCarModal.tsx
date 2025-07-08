@@ -133,20 +133,30 @@ export default function AddCarModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-gray-500/75 flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-lg shadow-xl border border-gray-200 p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-2xl font-bold text-slate-900 mb-6">Add New Car</h3>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-slate-900">Add New Vehicle</h3>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Make Selection */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-900 mb-2">
                 Make *
               </label>
               <CustomSelect
@@ -175,7 +185,7 @@ export default function AddCarModal({
             <div>
               <label
                 className={`block text-sm font-medium mb-2 ${
-                  !selectedMake ? "text-slate-400" : "text-slate-700"
+                  !selectedMake ? "text-slate-400" : "text-slate-900"
                 }`}
               >
                 Year *
@@ -198,7 +208,7 @@ export default function AddCarModal({
             <div>
               <label
                 className={`block text-sm font-medium mb-2 ${
-                  !selectedMake ? "text-slate-400" : "text-slate-700"
+                  !selectedMake ? "text-slate-400" : "text-slate-900"
                 }`}
               >
                 Model *
@@ -242,7 +252,7 @@ export default function AddCarModal({
             <div>
               <label
                 className={`block text-sm font-medium mb-2 ${
-                  !selectedModel ? "text-slate-400" : "text-slate-700"
+                  !selectedModel ? "text-slate-400" : "text-slate-900"
                 }`}
               >
                 Trim *
@@ -280,7 +290,7 @@ export default function AddCarModal({
                 selectedTrim === "custom") && (
                 <div className={trims.length > 0 ? "mt-3" : ""}>
                   {trims.length > 0 && (
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-900 mb-2">
                       Custom Trim
                     </label>
                   )}
@@ -290,7 +300,7 @@ export default function AddCarModal({
                     onChange={(e) => setCustomTrim(e.target.value)}
                     required={!selectedTrim || selectedTrim === "custom"}
                     disabled={!selectedModel}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 disabled:bg-slate-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 text-slate-900 disabled:bg-slate-100 disabled:cursor-not-allowed transition-colors"
                     placeholder="e.g., LX, EX, Sport, Base"
                   />
                   {!loading.trims && trims.length > 0 && (
@@ -308,14 +318,14 @@ export default function AddCarModal({
 
             {/* License Plate */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-900 mb-2">
                 License Plate (Optional)
               </label>
               <input
                 type="text"
                 value={licensePlate}
                 onChange={(e) => setLicensePlate(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 text-slate-900 transition-colors"
                 placeholder="e.g., ABC 1234"
               />
             </div>
@@ -326,7 +336,7 @@ export default function AddCarModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-slate-100 text-slate-700 py-3 px-6 rounded-xl font-semibold hover:bg-slate-200 transition-colors"
+              className="flex-1 bg-white border border-gray-300 text-slate-700 py-3 px-6 rounded-lg font-semibold hover:bg-slate-50 transition-colors"
             >
               Cancel
             </button>
@@ -340,7 +350,7 @@ export default function AddCarModal({
                 loading.models ||
                 loading.trims
               }
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-300 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300"
+              className="flex-1 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 disabled:cursor-not-allowed text-white py-3 px-6 rounded-lg font-semibold transition-colors"
             >
               {loading.models || loading.trims ? "Loading..." : "Add Vehicle"}
             </button>

@@ -69,8 +69,8 @@ export default function NavBar() {
               }}
               className={`font-medium transition-colors ${
                 isDashboardPage
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-slate-700 hover:text-blue-600"
+                  ? "text-slate-900 border-b-2 border-slate-900"
+                  : "text-slate-700 hover:text-slate-900"
               }`}
             >
               Dashboard
@@ -83,15 +83,15 @@ export default function NavBar() {
                   onClick={() => router.push("/booking")}
                   className={`font-medium transition-colors ${
                     isBookingPage
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-slate-700 hover:text-blue-600"
+                      ? "text-slate-900 border-b-2 border-slate-900"
+                      : "text-slate-700 hover:text-slate-900"
                   }`}
                 >
                   Book Service
                 </button>
                 <a
                   href="#mechanics"
-                  className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                  className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
                 >
                   Find Mechanics
                 </a>
@@ -105,15 +105,15 @@ export default function NavBar() {
                   onClick={() => router.push("/shop/profile")}
                   className={`font-medium transition-colors ${
                     isProfilePage
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-slate-700 hover:text-blue-600"
+                      ? "text-slate-900 border-b-2 border-slate-900"
+                      : "text-slate-700 hover:text-slate-900"
                   }`}
                 >
                   Shop Profile
                 </button>
                 <button
                   onClick={() => console.log("Manage bookings")}
-                  className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                  className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
                 >
                   Bookings
                 </button>
@@ -124,7 +124,7 @@ export default function NavBar() {
             {!isHomePage && (
               <button
                 onClick={() => router.push("/")}
-                className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
               >
                 Home
               </button>
@@ -156,12 +156,12 @@ export default function NavBar() {
 
             {/* User Avatar/Menu */}
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+              <div className="w-8 h-8 bg-slate-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
                 {user.first_name?.charAt(0) ||
                   user.email?.charAt(0).toUpperCase() ||
                   "U"}
               </div>
-              <span className="text-sm font-medium text-slate-700">
+              <span className="text-sm font-medium text-slate-900">
                 {user.first_name
                   ? `${user.first_name} ${user.last_name}`
                   : user.email}
@@ -189,19 +189,19 @@ export default function NavBar() {
             <>
               <a
                 href="#how-it-works"
-                className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
               >
                 How It Works
               </a>
               <a
                 href="#about"
-                className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
               >
                 About
               </a>
               <a
                 href="#mechanics"
-                className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
               >
                 Find Mechanics
               </a>
@@ -209,7 +209,7 @@ export default function NavBar() {
           ) : (
             <button
               onClick={() => router.push("/")}
-              className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
+              className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
             >
               Home
             </button>
@@ -217,7 +217,7 @@ export default function NavBar() {
 
           <button
             onClick={handleListGarage}
-            className="text-slate-700 hover:text-blue-600 font-medium transition-colors cursor-pointer"
+            className="text-slate-700 hover:text-slate-900 font-medium transition-colors cursor-pointer"
           >
             List Your Shop
           </button>
@@ -227,13 +227,13 @@ export default function NavBar() {
         <div className="hidden md:flex items-center space-x-4">
           <button
             onClick={handleSignIn}
-            className="text-slate-700 hover:text-blue-600 font-medium transition-colors"
+            className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
           >
             Sign In
           </button>
           <button
             onClick={handleSignUp}
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
           >
             Get Started
           </button>
@@ -244,7 +244,7 @@ export default function NavBar() {
 
   return (
     <>
-      <nav className="bg-white/95 backdrop-blur-sm shadow-lg border-b border-slate-200/50 sticky top-0 z-50">
+      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -269,7 +269,7 @@ export default function NavBar() {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className="p-2 rounded-md text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition-colors"
+                className="p-2 rounded-md text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors"
               >
                 <span className="sr-only">Open main menu</span>
                 <Bars3Icon className="h-6 w-6" />
