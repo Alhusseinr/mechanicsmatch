@@ -1,40 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/layouts/Dashboard";
 import { useAddCar } from "@/hooks/useAddCar";
 import AddCarModal from "./_components/AddCarModal";
 import CustomerCars from "./_components/CustomerCar";
 import { useDeleteCar } from "@/hooks/useDeleteCar";
+import { useCustomerData } from "@/hooks/useCustomerData";
 import Loader from "@/components/ui/Loader";
-import { Car, Booking } from "@/lib/types";
+import { Car } from "@/lib/types";
 import AppointmentsList from "./_components/AppointmentsList";
 
 export default function CustomerDashboard() {
-  const { user, loading } = useAuth();
-  const [cars, setCars] = useState<Car[]>([]);
+  const { user, loading: authLoading } = useAuth();
+  const { cars, appointments, loading: dataLoading, error: dataError, refreshData } = useCustomerData();
   const [showAddCar, setShowAddCar] = useState(false);
-  const [appointments, setAppointments] = useState<Booking[]>([]);
-
-  console.log("User in dashboard:", user);
 
   const { addCar, error } = useAddCar(user?.id || ""); // Pass user ID if available
   const { deleteCar } = useDeleteCar(); // Assuming you have a deleteCar function
-
-  useEffect(() => {
-    if (user?.cars) {
-      setCars(user.cars);
-    } else {
-      setCars([]);
-    }
-
-    if (user?.appointments) {
-      setAppointments(user.appointments);
-    } else {
-      setAppointments([]);
-    }
-  }, [user?.cars, user?.appointments]);
 
   const handleAddCar = async (carData: Partial<Car>) => {
     const newCar: Car = {
@@ -50,7 +34,8 @@ export default function CustomerDashboard() {
     const insertedCar = await addCar(newCar);
 
     if (insertedCar) {
-      setCars([...cars, newCar]);
+      // Refresh the data to get the updated cars list
+      refreshData();
       setShowAddCar(false);
     } else {
       console.error("Failed to add car:", error);
@@ -60,12 +45,13 @@ export default function CustomerDashboard() {
   const handleDeleteCar = async (carId: string) => {
     const success = await deleteCar(carId);
     if (success) {
-      setCars((prev) => prev.filter((car) => car.id !== carId));
+      // Refresh the data to get the updated cars list
+      refreshData();
     }
   };
 
-  if (loading) {
-    return <Loader loading={loading} />;
+  if (authLoading) {
+    return <Loader loading={authLoading} />;
   }
 
   return (
@@ -81,6 +67,12 @@ export default function CustomerDashboard() {
               <p className="text-slate-600">
                 Manage your vehicles and service appointments in one place
               </p>
+              {dataLoading && (
+                <p className="text-blue-600 text-sm mt-2">Loading your data...</p>
+              )}
+              {dataError && (
+                <p className="text-red-600 text-sm mt-2">{dataError}</p>
+              )}
             </div>
 
             {/* Compact Action Buttons */}

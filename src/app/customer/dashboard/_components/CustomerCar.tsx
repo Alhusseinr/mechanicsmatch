@@ -462,7 +462,6 @@ export default function EnhancedCustomerCars({
 }: CustomerCarsProps) {
   const [selectedCar, setSelectedCar] = useState<EnhancedCar | null>(null);
   const [showCarDetail, setShowCarDetail] = useState(false);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
   // Mock enhanced car data with additional properties
   const enhancedCars: EnhancedCar[] = cars.map((car, index) => ({
@@ -576,53 +575,26 @@ export default function EnhancedCustomerCars({
   };
 
   const getCarIcon = (make: string) => {
-    const makeIcons: Record<string, string> = {
-      tesla: "⚡",
-      bmw: "🏎️",
-      mercedes: "✨",
-      audi: "🔷",
-      toyota: "🚗",
-      honda: "🚙",
-      ford: "🛻",
-      chevrolet: "🚐",
-      nissan: "🚘",
-      hyundai: "🚕",
-      kia: "🚓",
-      mazda: "🏁",
-      subaru: "🌟",
-      volkswagen: "🔧",
-      lexus: "💎",
-      porsche: "🏆",
-      jeep: "🗻",
-      ram: "💪",
-      gmc: "🔨",
-    };
-
-    return makeIcons[make.toLowerCase()] || "🚗";
+    return (
+      <svg
+        className="w-8 h-8 text-slate-600"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+      </svg>
+    );
   };
 
-  const getCarColor = (index: number) => {
-    const colors = [
-      "from-blue-500 to-blue-600",
-      "from-green-500 to-green-600",
-      "from-purple-500 to-purple-600",
-      "from-orange-500 to-orange-600",
-      "from-red-500 to-red-600",
-      "from-indigo-500 to-indigo-600",
-      "from-pink-500 to-pink-600",
-      "from-yellow-500 to-yellow-600",
-    ];
-    return colors[index % colors.length];
-  };
 
   return (
     <>
-      <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 mb-6 sm:mb-8">
+      <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200 mb-6 sm:mb-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
             <h3 className="text-lg sm:text-xl font-bold text-slate-900">
-              Your Garage
+              Vehicle Fleet
             </h3>
             <p className="text-sm text-slate-600 mt-1">
               {enhancedCars.length > 0
@@ -633,59 +605,9 @@ export default function EnhancedCustomerCars({
             </p>
           </div>
           <div className="flex items-center space-x-3">
-            {/* View Mode Toggle */}
-            {enhancedCars.length > 0 && (
-              <div className="hidden sm:flex items-center bg-gray-100 rounded-lg p-1">
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`p-2 rounded-md transition-colors ${
-                    viewMode === "grid"
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                    />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={`p-2 rounded-md transition-colors ${
-                    viewMode === "list"
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 10h16M4 14h16M4 18h16"
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
-
             <button
               onClick={onAddCar}
-              className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
+              className="flex items-center space-x-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200 text-sm sm:text-base"
             >
               <svg
                 className="w-4 h-4 sm:w-5 sm:h-5"
@@ -706,191 +628,75 @@ export default function EnhancedCustomerCars({
           </div>
         </div>
 
-        {/* Cars Display */}
+        {/* Cars Display - List View Only */}
         {enhancedCars.length > 0 ? (
-          <div
-            className={
-              viewMode === "grid"
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
-                : "space-y-4"
-            }
-          >
-            {enhancedCars.map((car, index) => {
+          <div className="space-y-4">
+            {enhancedCars.map((car) => {
               const maintenanceStatus = getMaintenanceStatus(car);
 
-              if (viewMode === "list") {
-                return (
-                  <div
-                    key={car.id}
-                    onClick={() => handleCarClick(car)}
-                    className="bg-white rounded-xl p-4 border border-gray-200 hover:border-gray-300 hover:shadow-md cursor-pointer transition-all duration-200"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div
-                        className={`w-16 h-16 bg-gradient-to-br ${getCarColor(
-                          index
-                        )} rounded-xl flex items-center justify-center text-2xl flex-shrink-0`}
-                      >
-                        {getCarIcon(car.car_make)}
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-semibold text-gray-900 text-lg">
-                            {car.car_year} {car.car_make} {car.car_model}
-                          </h4>
-                          {getStatusBadge(
-                            maintenanceStatus.status,
-                            maintenanceStatus.count
-                          )}
-                        </div>
-
-                        <div className="flex items-center space-x-3 text-sm text-gray-600 mb-2">
-                          <span>{car.car_trim}</span>
-                          {car.mileage && (
-                            <>
-                              <span>•</span>
-                              <span>{car.mileage.toLocaleString()} mi</span>
-                            </>
-                          )}
-                          {car.color && (
-                            <>
-                              <span>•</span>
-                              <span>{car.color}</span>
-                            </>
-                          )}
-                        </div>
-
-                        {car.car_license_plate && (
-                          <div className="text-xs text-gray-500">
-                            <span className="font-mono bg-gray-100 px-2 py-1 rounded">
-                              {car.car_license_plate}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex-shrink-0">
-                        <svg
-                          className="w-5 h-5 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-
-              // Grid View
               return (
                 <div
                   key={car.id}
                   onClick={() => handleCarClick(car)}
-                  className={`relative bg-gradient-to-br ${getCarColor(
-                    index
-                  )} rounded-xl sm:rounded-2xl p-4 sm:p-5 text-white cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl group`}
+                  className="bg-white rounded-lg p-4 border border-gray-200 hover:border-gray-300 hover:shadow-sm cursor-pointer transition-all duration-200"
                 >
-                  {/* Maintenance Status Badge */}
-                  <div className="absolute top-2 right-2">
-                    {maintenanceStatus.status === "urgent" && (
-                      <div className="bg-red-500 text-white rounded-full px-2 py-1 text-xs font-bold flex items-center">
-                        <svg
-                          className="w-3 h-3 mr-1"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        {maintenanceStatus.count}
-                      </div>
-                    )}
-                    {maintenanceStatus.status === "attention" && (
-                      <div className="bg-yellow-500 text-white rounded-full px-2 py-1 text-xs font-bold">
-                        {maintenanceStatus.count}
-                      </div>
-                    )}
-                    {maintenanceStatus.status === "good" && (
-                      <div className="bg-green-500 text-white rounded-full px-2 py-1 text-xs font-bold">
-                        ✓
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Car Content */}
-                  <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center text-2xl sm:text-3xl">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-16 h-16 bg-slate-50 border border-slate-300 rounded-lg flex items-center justify-center flex-shrink-0">
                       {getCarIcon(car.car_make)}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold text-lg sm:text-xl truncate">
-                        {car.car_year} {car.car_make}
-                      </div>
-                      <div className="text-white/80 text-sm sm:text-base truncate">
-                        {car.car_model} {car.car_trim}
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Car Details */}
-                  <div className="space-y-2 mb-3">
-                    {car.mileage && (
-                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2">
-                        <div className="flex justify-between items-center">
-                          <span className="text-white/80 text-xs">Mileage</span>
-                          <span className="text-white font-semibold text-sm">
-                            {car.mileage.toLocaleString()} mi
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-semibold text-gray-900 text-lg">
+                          {car.car_year} {car.car_make} {car.car_model}
+                        </h4>
+                        {getStatusBadge(
+                          maintenanceStatus.status,
+                          maintenanceStatus.count
+                        )}
+                      </div>
+
+                      <div className="flex items-center space-x-3 text-sm text-gray-600 mb-2">
+                        <span>{car.car_trim}</span>
+                        {car.mileage && (
+                          <>
+                            <span>•</span>
+                            <span>{car.mileage.toLocaleString()} mi</span>
+                          </>
+                        )}
+                        {car.color && (
+                          <>
+                            <span>•</span>
+                            <span>{car.color}</span>
+                          </>
+                        )}
+                      </div>
+
+                      {car.car_license_plate && (
+                        <div className="text-xs text-gray-500">
+                          <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                            {car.car_license_plate}
                           </span>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
 
-                    {car.car_license_plate && (
-                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2">
-                        <div className="text-center">
-                          <div className="text-xs text-white/60 uppercase tracking-wider font-medium">
-                            License
-                          </div>
-                          <div className="text-sm sm:text-base font-bold tracking-wider">
-                            {car.car_license_plate}
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                    <div className="flex-shrink-0">
+                      <svg
+                        className="w-5 h-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
                   </div>
-
-                  {/* Action Hint */}
-                  <div className="flex items-center justify-between text-white/80">
-                    <div className="text-xs sm:text-sm">Tap for details</div>
-                    <svg
-                      className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </div>
-
-                  {/* Hover Effect Overlay */}
-                  <div className="absolute inset-0 bg-white/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 </div>
               );
             })}
@@ -898,21 +704,27 @@ export default function EnhancedCustomerCars({
         ) : (
           // Empty State
           <div className="text-center py-8 sm:py-12">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl sm:text-5xl">
-              🚗
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 border-2 border-slate-300 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <svg
+                className="w-10 h-10 sm:w-12 sm:h-12 text-slate-400"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+              </svg>
             </div>
             <h4 className="text-lg sm:text-xl font-semibold text-slate-900 mb-2">
-              Your garage is empty
+              No vehicles registered
             </h4>
             <p className="text-slate-600 mb-6 text-sm sm:text-base px-4 max-w-md mx-auto">
               Add your first vehicle to get started with booking services and
-              managing your automotive needs
+              managing your automotive maintenance
             </p>
             <button
               onClick={onAddCar}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
+              className="bg-slate-900 hover:bg-slate-800 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold transition-colors duration-200 text-sm sm:text-base"
             >
-              Add Your First Vehicle
+              Add Vehicle
             </button>
           </div>
         )}

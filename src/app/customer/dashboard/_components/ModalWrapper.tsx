@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { Booking } from "@/lib/types";
 
 // Mobile-responsive modal wrapper component
@@ -19,7 +20,7 @@ function Modal({
 }: ModalProps) {
   if (!open) return null;
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Mobile-first responsive layout */}
       <div className="flex min-h-full items-end justify-center p-2 sm:p-4 text-center sm:items-center">
@@ -31,7 +32,7 @@ function Modal({
 
         {/* Modal content - Full width on mobile, constrained on desktop */}
         <div
-          className={`m-20 relative w-full transform overflow-hidden rounded-t-2xl sm:rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:${maxWidth}`}
+          className={`m-21 relative w-full transform overflow-hidden rounded-t-2xl sm:rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:${maxWidth}`}
         >
           {/* Header - sticky on mobile for long content */}
           <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-4 sm:px-6">
@@ -70,6 +71,11 @@ function Modal({
       </div>
     </div>
   );
+
+  // Use portal to render modal at document root level
+  return typeof document !== 'undefined' 
+    ? createPortal(modalContent, document.body)
+    : null;
 }
 
 // 1. Mobile-responsive Reschedule Modal
