@@ -125,9 +125,9 @@ function Drawer({ isOpen, onClose, userType, currentPath }: DrawerProps) {
           />
         </svg>
       ),
-      path: '/customer/profile',
-      active: currentPath === '/customer/profile'
-    }
+      path: "/customer/profile",
+      active: currentPath === "/customer/profile",
+    },
   ];
 
   // Mechanic menu items
