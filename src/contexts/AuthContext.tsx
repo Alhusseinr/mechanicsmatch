@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Session, User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase";
@@ -79,9 +79,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     authUser: User
   ): Promise<CustomUser | null> => {
     try {
+      // Only fetch essential profile data initially
       const { data: profile, error } = await supabase
         .from("users")
-        .select("*")
+        .select("user_type, first_name, last_name, phone, is_verified")
         .eq("id", authUser.id)
         .single();
 
@@ -92,72 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       console.log("Fetched user profile:", profile);
 
-      const { data: userCars, error: userCarsError } = await supabase
-        .from("cars")
-        .select("*")
-        .eq("user_id", authUser.id);
-
-      if (userCarsError) {
-        console.error("Error fetching user cars:", userCarsError);
-      }
-
-      const { data: customerAppointments, error: customerAppointmentsError } =
-        await supabase
-          .from("bookings")
-          .select("*")
-          .eq("customer_id", authUser.id);
-
-      if (customerAppointmentsError) {
-        console.error(
-          "Error fetching customer appointments:",
-          customerAppointmentsError
-        );
-      }
-
-      if (customerAppointments) {
-        await Promise.all(
-          customerAppointments.map(async (appointment) => {
-            const { data: shop, error: shopError } = await supabase
-              .from("shops")
-              .select("*")
-              .eq("id", appointment.shop_id)
-              .single();
-
-            if (shopError) {
-              console.error("Error fetching shop details:", shopError);
-            }
-
-            appointment.shop_name = shop?.name || "";
-            appointment.shop = shop;
-
-            const { data: service, error: serviceError } = await supabase
-              .from("services")
-              .select("*")
-              .eq("id", appointment.service_id)
-              .single();
-
-            if (serviceError) {
-              console.error("Error fetching service details:", serviceError);
-            }
-
-            appointment.service_id = service?.name || "";
-
-            const apptTime = new Date(
-              `1970-01-01T${appointment.appointment_time}`
-            );
-            appointment.appointment_time = apptTime.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            });
-          })
-        );
-      }
-
-      console.log("Fetched user cars:", userCars);
-      console.log("Fetched customer appointments:", customerAppointments);
-
-      // Merge auth.users data with public.users data
+      // Return basic profile without heavy data fetching for faster auth
       return {
         ...authUser,
         user_type: profile.user_type,
@@ -165,8 +101,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         last_name: profile.last_name,
         phone: profile.phone,
         is_verified: profile.is_verified,
-        cars: userCars || [],
-        appointments: customerAppointments || [],
+        cars: [], // Load separately when needed
+        appointments: [], // Load separately when needed
       };
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -182,17 +118,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSession(session);
-      if (session?.user) {
-        const userWithProfile = await fetchUserProfile(session.user);
-        setUser(userWithProfile);
-      } else {
-        setUser(null);
+    let mounted = true;
+
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!mounted) return;
+
+        setSession(session);
+        
+        if (session?.user) {
+          const userWithProfile = await fetchUserProfile(session.user);
+          if (mounted) {
+            setUser(userWithProfile);
+          }
+        } else {
+          if (mounted) {
+            setUser(null);
+          }
+        }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+        if (mounted) {
+          setUser(null);
+          setSession(null);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
-    });
+    };
+
+    initializeAuth();
 
     // Listen for auth changes
     const {
@@ -201,32 +163,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("🔍 Auth state changed:", _event);
       console.log("🔍 New session:", !!session);
 
+      if (!mounted) return;
+
       setSession(session);
 
-      if (session?.user){
-        const userWithProfile = await fetchUserProfile(session.user);
-        setUser(userWithProfile);
+      if (session?.user) {
+        try {
+          const userWithProfile = await fetchUserProfile(session.user);
+          if (mounted) {
+            setUser(userWithProfile);
 
-        if (_event === "SIGNED_IN" && userWithProfile?.user_type) {
-          if (userWithProfile.user_type === "mechanic") {
-            router.push("/shop/dashboard");
-          } else {
-            router.push("/customer/dashboard");
+            if (_event === "SIGNED_IN" && userWithProfile?.user_type) {
+              if (userWithProfile.user_type === "mechanic") {
+                router.push("/shop/dashboard");
+              } else {
+                router.push("/customer/dashboard");
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching user profile on auth change:", error);
+          if (mounted) {
+            setUser(null);
           }
         }
-
-        if (_event === "SIGNED_OUT") {
+      } else {
+        if (mounted) {
           setUser(null);
+        }
+        
+        if (_event === "SIGNED_OUT") {
           router.push("/login");
         }
-      } else {
-        setUser(null);
       }
     });
 
-    setLoading(false);
-
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, [supabase, router]);

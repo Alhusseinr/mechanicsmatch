@@ -280,9 +280,9 @@ function Drawer({ isOpen, onClose, userType, currentPath }: DrawerProps) {
         }`}
       >
         {/* Drawer Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-200">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+            <div className="w-10 h-10 bg-slate-600 rounded-lg flex items-center justify-center text-white font-semibold">
               {user?.first_name?.charAt(0) ||
                 user?.email?.charAt(0).toUpperCase() ||
                 "U"}
@@ -293,6 +293,7 @@ function Drawer({ isOpen, onClose, userType, currentPath }: DrawerProps) {
                   ? `${user.first_name} ${user.last_name}`
                   : user?.email}
               </div>
+              <div className="text-xs text-slate-500 capitalize">{userType}</div>
             </div>
           </div>
           <button
@@ -322,10 +323,10 @@ function Drawer({ isOpen, onClose, userType, currentPath }: DrawerProps) {
               <button
                 key={item.id}
                 onClick={() => handleNavigation(item.path)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   item.active
-                    ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg"
-                    : "text-slate-700 hover:bg-slate-100 hover:text-blue-600"
+                    ? "bg-slate-900 text-white"
+                    : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
                 {item.icon}
@@ -341,12 +342,12 @@ function Drawer({ isOpen, onClose, userType, currentPath }: DrawerProps) {
         </nav>
 
         {/* Quick Actions */}
-        <div className="p-4 border-t border-slate-200">
-          <div className="space-y-2">
+        <div className="p-4 border-t border-gray-200">
+          <div className="space-y-3">
             {userType === "customer" ? (
               <button
-                onClick={() => handleNavigation("/booking")}
-                className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300"
+                onClick={() => handleNavigation("/search")}
+                className="w-full flex items-center justify-center space-x-2 bg-slate-900 hover:bg-slate-800 text-white py-3 px-4 rounded-lg font-semibold transition-colors"
               >
                 <svg
                   className="w-5 h-5"
@@ -358,15 +359,15 @@ function Drawer({ isOpen, onClose, userType, currentPath }: DrawerProps) {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M12 4v16m8-8H4"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-                <span>Book Service</span>
+                <span>Find Services</span>
               </button>
             ) : (
               <button
                 onClick={() => console.log("Add new service")}
-                className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300"
+                className="w-full flex items-center justify-center space-x-2 bg-slate-900 hover:bg-slate-800 text-white py-3 px-4 rounded-lg font-semibold transition-colors"
               >
                 <svg
                   className="w-5 h-5"
@@ -387,7 +388,7 @@ function Drawer({ isOpen, onClose, userType, currentPath }: DrawerProps) {
 
             <button
               onClick={() => handleNavigation("/")}
-              className="w-full flex items-center justify-center space-x-2 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 px-4 rounded-xl font-medium transition-colors"
+              className="w-full flex items-center justify-center space-x-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -410,7 +411,7 @@ function Drawer({ isOpen, onClose, userType, currentPath }: DrawerProps) {
                 signOut();
                 router.push("/login");
               }}
-              className="w-full flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-semibold transition-colors"
+              className="w-full flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -453,9 +454,9 @@ export default function DashboardLayout({
   const userType = user?.user_type || "customer";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-slate-200/50 sticky top-0 z-30">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -481,17 +482,17 @@ export default function DashboardLayout({
 
               {/* Title */}
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">{title}</h1>
-                {subtitle && <p className="text-slate-600">{subtitle}</p>}
+                <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
+                {subtitle && <p className="text-slate-600 text-sm">{subtitle}</p>}
               </div>
             </div>
 
             {/* Right side actions */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               {/* Notifications */}
               <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors relative">
                 <svg
-                  className="w-6 h-6 text-slate-600"
+                  className="w-5 h-5 text-slate-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -503,19 +504,19 @@ export default function DashboardLayout({
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                   />
                 </svg>
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
                   3
                 </span>
               </button>
 
               {/* User Avatar */}
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                <div className="w-8 h-8 bg-slate-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
                   {user?.first_name?.charAt(0) ||
                     user?.email?.charAt(0).toUpperCase() ||
                     "U"}
                 </div>
-                <span className="hidden sm:block text-sm font-medium text-slate-700">
+                <span className="hidden sm:block text-sm font-medium text-slate-900">
                   {user?.first_name
                     ? `${user.first_name} ${user.last_name}`
                     : user?.email}

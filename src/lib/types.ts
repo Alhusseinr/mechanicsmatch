@@ -203,6 +203,7 @@ export interface Booking {
   shop_name: string;
   shop_id: string;
   service_id: string;
+  service_name?: string; // Enhanced field from database lookup
   appointment_date: string;
   appointment_time: string;
   status: "pending" | "confirmed" | "in_progress" | "completed" | "cancelled";

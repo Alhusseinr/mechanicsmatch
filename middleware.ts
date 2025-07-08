@@ -45,35 +45,9 @@ export async function middleware(req: NextRequest) {
 
   // Redirect authenticated users away from auth routes
   if (isAuthRoute && session) {
-    console.log("🔍 User is authenticated on auth route, fetching profile...");
-
-    // Fetch user type to determine where to redirect
-    try {
-      const { data: profile } = await supabase
-        .from("users")
-        .select("user_type")
-        .eq("id", session.user.id)
-        .single();
-
-      console.log("🔍 Profile fetched:", profile);
-
-      if (!profile) {
-        console.log("🔍 No profile, redirecting to profile completion");
-        return NextResponse.redirect(new URL("/login", req.url));
-      }
-
-      if (profile?.user_type === "mechanic") {
-        console.log("🔍 Redirecting mechanic to shop dashboard");
-        return NextResponse.redirect(new URL("/shop/dashboard", req.url));
-      } else {
-        console.log("🔍 Redirecting customer to customer dashboard");
-        return NextResponse.redirect(new URL("/customer/dashboard", req.url));
-      }
-    } catch (error) {
-      // If we can't fetch profile, redirect to home
-      console.error("🔍 Middleware profile fetch error:", error);
-      return NextResponse.redirect(new URL("/", req.url));
-    }
+    console.log("🔍 User is authenticated on auth route, redirecting to home");
+    // Simply redirect to home and let the AuthContext handle the proper redirect
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return res;

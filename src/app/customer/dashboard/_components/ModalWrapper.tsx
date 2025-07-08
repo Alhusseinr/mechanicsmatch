@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { Booking } from "@/lib/types";
 
 // Mobile-responsive modal wrapper component
@@ -19,7 +20,7 @@ function Modal({
 }: ModalProps) {
   if (!open) return null;
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Mobile-first responsive layout */}
       <div className="flex min-h-full items-end justify-center p-2 sm:p-4 text-center sm:items-center">
@@ -31,25 +32,25 @@ function Modal({
 
         {/* Modal content - Full width on mobile, constrained on desktop */}
         <div
-          className={`m-20 relative w-full transform overflow-hidden rounded-t-2xl sm:rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:${maxWidth}`}
+          className={`relative w-full transform overflow-hidden rounded-t-2xl sm:rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:${maxWidth}`}
         >
           {/* Header - sticky on mobile for long content */}
-          <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-4 sm:px-6">
+          <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold leading-6 text-gray-900 sm:text-xl">
+              <h3 className="text-xl font-semibold text-slate-900">
                 {title}
               </h3>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-full p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+                className="rounded-lg p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
               >
                 <span className="sr-only">Close</span>
                 <svg
-                  className="h-6 w-6"
+                  className="h-5 w-5"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth="1.5"
+                  strokeWidth="2"
                   stroke="currentColor"
                 >
                   <path
@@ -63,13 +64,18 @@ function Modal({
           </div>
 
           {/* Content area with proper mobile padding */}
-          <div className="px-4 py-4 sm:px-6 sm:py-6 max-h-[70vh] sm:max-h-[80vh] overflow-y-auto">
+          <div className="px-6 py-6 max-h-[70vh] sm:max-h-[80vh] overflow-y-auto">
             {children}
           </div>
         </div>
       </div>
     </div>
   );
+
+  // Use portal to render modal at document root level
+  return typeof document !== 'undefined' 
+    ? createPortal(modalContent, document.body)
+    : null;
 }
 
 // 1. Mobile-responsive Reschedule Modal
@@ -177,7 +183,7 @@ export function RescheduleModal({
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
                 min={getMinDate()}
-                className="block w-full rounded-lg border-0 py-3 px-4 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                className="block w-full rounded-lg border border-gray-300 py-3 px-4 text-base text-slate-900 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors"
                 required
               />
             </div>
@@ -195,8 +201,8 @@ export function RescheduleModal({
                     onClick={() => setSelectedTime(time)}
                     className={`px-3 py-3 text-sm font-medium rounded-lg border transition-all duration-200 touch-manipulation ${
                       selectedTime === time
-                        ? "bg-indigo-600 text-white border-indigo-600 shadow-md"
-                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 active:bg-gray-100"
+                        ? "bg-slate-900 text-white border-slate-900"
+                        : "bg-white text-slate-700 border-gray-300 hover:bg-slate-50"
                     }`}
                   >
                     {time}
@@ -210,14 +216,14 @@ export function RescheduleModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full sm:w-auto px-6 py-3 text-base font-semibold text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
+                className="w-full sm:w-auto px-6 py-3 text-base font-semibold text-slate-700 bg-white border border-gray-300 rounded-lg hover:bg-slate-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || !selectedDate || !selectedTime}
-                className="w-full sm:w-auto px-6 py-3 text-base font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 touch-manipulation"
+                className="w-full sm:w-auto px-6 py-3 text-base font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? "Rescheduling..." : "Confirm Reschedule"}
               </button>
@@ -251,8 +257,8 @@ export function ViewDetailsModal({
       {booking && (
         <div className="space-y-6">
           {/* Service Information - mobile-optimized cards */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+            <h4 className="text-lg font-semibold text-slate-900 mb-4">
               Service Information
             </h4>
             <div className="space-y-3">
@@ -260,8 +266,8 @@ export function ViewDetailsModal({
                 <dt className="text-sm font-medium text-gray-500 mb-1 sm:mb-0">
                   Service
                 </dt>
-                <dd className="text-sm text-gray-900 sm:text-right">
-                  {booking.service_id}
+                <dd className="text-sm text-slate-900 font-medium sm:text-right">
+                  {booking.service_name || booking.service_id}
                 </dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between">
@@ -304,8 +310,8 @@ export function ViewDetailsModal({
           </div>
 
           {/* Shop Information */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+            <h4 className="text-lg font-semibold text-slate-900 mb-4">
               Shop Information
             </h4>
             <div className="space-y-3">
@@ -321,8 +327,8 @@ export function ViewDetailsModal({
           </div>
 
           {/* Vehicle Information */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+            <h4 className="text-lg font-semibold text-slate-900 mb-4">
               Vehicle Information
             </h4>
             <div className="space-y-3">
@@ -428,24 +434,24 @@ export function LeaveReviewModal({
       {booking && (
         <div className="space-y-6">
           {/* Service info - mobile optimized */}
-          <div className="rounded-lg bg-green-50 p-4">
-            <h4 className="text-sm font-medium text-green-900 mb-3">
+          <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
+            <h4 className="text-sm font-semibold text-slate-900 mb-3">
               Service Completed
             </h4>
-            <div className="space-y-2 text-sm text-green-800">
+            <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="font-medium">Service:</span>
-                <span className="text-right">{booking.service_id}</span>
+                <span className="font-medium text-slate-600">Service:</span>
+                <span className="text-slate-900 font-medium">{booking.service_name || booking.service_id}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-medium">Shop:</span>
-                <span className="text-right truncate ml-2">
+                <span className="font-medium text-slate-600">Shop:</span>
+                <span className="text-slate-900 font-medium truncate ml-2">
                   {booking.shop_name}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-medium">Date:</span>
-                <span className="text-right">{booking.appointment_date}</span>
+                <span className="font-medium text-slate-600">Date:</span>
+                <span className="text-slate-900 font-medium">{booking.appointment_date}</span>
               </div>
             </div>
           </div>
@@ -500,7 +506,7 @@ export function LeaveReviewModal({
                 id="review-title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="block w-full rounded-lg border-0 py-3 px-4 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                className="block w-full rounded-lg border border-gray-300 py-3 px-4 text-base text-slate-900 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors"
                 placeholder="Summarize your experience"
               />
             </div>
@@ -531,14 +537,14 @@ export function LeaveReviewModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full sm:w-auto px-6 py-3 text-base font-semibold text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
+                className="w-full sm:w-auto px-6 py-3 text-base font-semibold text-slate-700 bg-white border border-gray-300 rounded-lg hover:bg-slate-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || rating === 0}
-                className="w-full sm:w-auto px-6 py-3 text-base font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 touch-manipulation"
+                className="w-full sm:w-auto px-6 py-3 text-base font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? "Submitting..." : "Submit Review"}
               </button>
@@ -740,14 +746,14 @@ export function ViewInvoiceModal({
             <button
               type="button"
               onClick={handlePrint}
-              className="w-full px-4 py-3 text-base font-semibold text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
+              className="w-full px-4 py-3 text-base font-semibold text-slate-700 bg-white border border-gray-300 rounded-lg hover:bg-slate-50 transition-colors"
             >
               Print
             </button>
             <button
               type="button"
               onClick={handleDownload}
-              className="w-full px-4 py-3 text-base font-semibold text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
+              className="w-full px-4 py-3 text-base font-semibold text-slate-700 bg-white border border-gray-300 rounded-lg hover:bg-slate-50 transition-colors"
             >
               Download PDF
             </button>
