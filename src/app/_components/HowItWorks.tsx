@@ -87,7 +87,7 @@ export default function HowItWorks() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Loop through steps */}
           {items.map((item, index) => (
-            <div key={index} className="text-center border rounded-lg p-8 bg-slate-100">
+            <div key={index} className="text-center shadow-sm border border-gray-200 rounded-lg p-8 bg-slate-50">
               {item.icon}
               <h3 className="text-xl font-bold text-slate-900 mb-4">
                 {index + 1}. {item.item}

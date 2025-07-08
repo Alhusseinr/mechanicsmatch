@@ -127,7 +127,7 @@ export default function CustomerDashboard() {
         </div>
 
         {/* Appointments List - Component handles its own mobile responsiveness */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
           <AppointmentsList appointments={appointments} />
         </div>
 

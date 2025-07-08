@@ -369,7 +369,7 @@ export function ViewDetailsModal({
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-6 py-3 text-base font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 transition-colors touch-manipulation"
+              className="w-full sm:w-auto px-12 py-3 text-base font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Close
             </button>
