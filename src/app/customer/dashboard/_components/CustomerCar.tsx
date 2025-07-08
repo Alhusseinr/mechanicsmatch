@@ -461,10 +461,6 @@ export default function EnhancedCustomerCars({
   const enhancedCars: EnhancedCar[] = cars.map((car) => ({
     ...car,
     // Use real data or provide sensible defaults
-    mileage: car.mileage || undefined,
-    color: car.color || undefined,
-    vin: car.vin || undefined,
-    last_service_date: car.last_service || undefined,
     next_service_due: undefined, // This would come from maintenance tracking
     service_history: [], // This would be fetched from bookings/service records
     maintenance_alerts: [], // This would be calculated based on real data
