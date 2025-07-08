@@ -90,7 +90,7 @@ export default function Search({ onSearch, className = "" }: SearchProps) {
 
   return (
     <div className={`mt-10 w-full max-w-4xl mx-auto ${className}`}>
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl lg:rounded-3xl shadow-xl border border-white/20 p-4 sm:p-6 lg:p-4">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl lg:rounded-3xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-4">
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-3 items-stretch">
           {/* Location Input */}
           <div className="flex-1 min-w-0">
