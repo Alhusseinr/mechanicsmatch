@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import MobileMenu from "./MobileMenu";
@@ -10,15 +10,12 @@ export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname(); // Get current route
-  const { user, session, loading, signOut } = useAuth();
+  const { user, session, signOut } = useAuth();
 
   const handleListGarage = () => {
     console.log("List your garage clicked");
   };
 
-  const handleViewProfile = (mechanicId: number) => {
-    console.log("View profile for mechanic:", mechanicId);
-  };
 
   const handleSignIn = () => {
     router.push("/login");
@@ -30,25 +27,11 @@ export default function NavBar() {
 
   // Check if user is on specific routes
   const isHomePage = pathname === "/";
-  const isAuthPage = pathname === "/login" || pathname === "/register";
   const isDashboardPage = pathname.includes("/dashboard");
-  const isCustomerDashboard = pathname.includes("/customer");
-  const isMechanicDashboard = pathname.includes("/shop");
   const isBookingPage = pathname.includes("/booking");
   const isProfilePage = pathname.includes("/profile");
 
-  // Don't show navbar on certain pages
-  if (isAuthPage) {
-    return null; // Hide navbar completely on login/register pages
-  }
-
-  if (isCustomerDashboard) {
-    return null; // Hide navbar on customer dashboard
-  }
-
-  if (isMechanicDashboard) {
-    return null; // Hide navbar on customer dashboard
-  }
+  // Navbar is now shared across all pages
 
   // Different navbar content based on route and auth state
   const getNavContent = () => {
@@ -244,7 +227,7 @@ export default function NavBar() {
 
   return (
     <>
-      <nav className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
