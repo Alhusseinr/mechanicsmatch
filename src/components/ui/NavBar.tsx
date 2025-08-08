@@ -1,21 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
-import { Bars3Icon } from "@heroicons/react/24/outline";
+import React, { useState, useRef, useEffect } from "react";
+import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import MobileMenu from "./MobileMenu";
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const router = useRouter();
-  const pathname = usePathname(); // Get current route
+  const pathname = usePathname();
   const { user, session, signOut } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setUserDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleListGarage = () => {
     console.log("List your garage clicked");
   };
-
 
   const handleSignIn = () => {
     router.push("/login");
@@ -30,8 +45,6 @@ export default function NavBar() {
   const isDashboardPage = pathname.includes("/dashboard");
   const isBookingPage = pathname.includes("/booking");
   const isProfilePage = pathname.includes("/profile");
-
-  // Navbar is now shared across all pages
 
   // Different navbar content based on route and auth state
   const getNavContent = () => {
@@ -52,7 +65,7 @@ export default function NavBar() {
               }}
               className={`font-medium transition-colors ${
                 isDashboardPage
-                  ? "text-slate-900 border-b-2 border-slate-900"
+                  ? "text-blue-600 border-b-2 border-blue-600"
                   : "text-slate-700 hover:text-slate-900"
               }`}
             >
@@ -66,18 +79,32 @@ export default function NavBar() {
                   onClick={() => router.push("/booking")}
                   className={`font-medium transition-colors ${
                     isBookingPage
-                      ? "text-slate-900 border-b-2 border-slate-900"
+                      ? "text-blue-600 border-b-2 border-blue-600"
                       : "text-slate-700 hover:text-slate-900"
                   }`}
                 >
                   Book Service
                 </button>
-                <a
-                  href="#mechanics"
+                <button
+                  onClick={() => router.push("/search")}
                   className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
                 >
-                  Find Mechanics
-                </a>
+                  Find Shops
+                </button>
+                <button
+                  onClick={() => {
+                    if (user.user_type === "customer") {
+                      router.push("/customer/profile");
+                    }
+                  }}
+                  className={`font-medium transition-colors ${
+                    isProfilePage
+                      ? "text-blue-600 border-b-2 border-blue-600"
+                      : "text-slate-700 hover:text-slate-900"
+                  }`}
+                >
+                  My Profile
+                </button>
               </>
             )}
 
@@ -85,20 +112,26 @@ export default function NavBar() {
             {user.user_type === "mechanic" && (
               <>
                 <button
+                  onClick={() => router.push("/shop/bookings")}
+                  className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
+                >
+                  Bookings
+                </button>
+                <button
+                  onClick={() => router.push("/shop/services")}
+                  className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
+                >
+                  Services
+                </button>
+                <button
                   onClick={() => router.push("/shop/profile")}
                   className={`font-medium transition-colors ${
                     isProfilePage
-                      ? "text-slate-900 border-b-2 border-slate-900"
+                      ? "text-blue-600 border-b-2 border-blue-600"
                       : "text-slate-700 hover:text-slate-900"
                   }`}
                 >
                   Shop Profile
-                </button>
-                <button
-                  onClick={() => console.log("Manage bookings")}
-                  className="text-slate-700 hover:text-slate-900 font-medium transition-colors"
-                >
-                  Bookings
                 </button>
               </>
             )}
@@ -119,7 +152,7 @@ export default function NavBar() {
             {/* Notifications */}
             <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors relative">
               <svg
-                className="w-6 h-6 text-slate-600"
+                className="w-5 h-5 text-slate-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -132,32 +165,134 @@ export default function NavBar() {
                 />
               </svg>
               {/* Notification badge */}
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
                 3
               </span>
             </button>
 
-            {/* User Avatar/Menu */}
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-slate-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
-                {user.first_name?.charAt(0) ||
-                  user.email?.charAt(0).toUpperCase() ||
-                  "U"}
-              </div>
-              <span className="text-sm font-medium text-slate-900">
-                {user.first_name
-                  ? `${user.first_name} ${user.last_name}`
-                  : user.email}
-              </span>
-            </div>
+            {/* User Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                  {user.first_name?.charAt(0) ||
+                    user.email?.charAt(0).toUpperCase() ||
+                    "U"}
+                </div>
+                <span className="text-sm font-medium text-slate-900 max-w-32 truncate">
+                  {user.first_name
+                    ? `${user.first_name} ${user.last_name}`
+                    : user.email}
+                </span>
+                <ChevronDownIcon className={`w-4 h-4 text-slate-600 transition-transform ${userDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-            {/* Sign Out Button */}
-            <button
-              onClick={signOut}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
-            >
-              Sign Out
-            </button>
+              {/* Dropdown Menu */}
+              {userDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-medium text-slate-900">
+                      {user.first_name
+                        ? `${user.first_name} ${user.last_name}`
+                        : user.email}
+                    </p>
+                    <p className="text-sm text-slate-500 capitalize">{user.user_type}</p>
+                  </div>
+                  
+                  <div className="py-1">
+                    <button
+                      onClick={() => {
+                        if (user.user_type === "mechanic") {
+                          router.push("/shop/dashboard");
+                        } else {
+                          router.push("/customer/dashboard");
+                        }
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center space-x-3"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2V7"></path>
+                      </svg>
+                      <span>Dashboard</span>
+                    </button>
+
+                    {user.user_type === "customer" ? (
+                      <>
+                        <button
+                          onClick={() => {
+                            router.push("/customer/profile");
+                            setUserDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center space-x-3"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                          </svg>
+                          <span>My Profile</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            router.push("/customer/bookings");
+                            setUserDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center space-x-3"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                          </svg>
+                          <span>My Bookings</span>
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => {
+                            router.push("/shop/profile");
+                            setUserDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center space-x-3"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m4 0V9a1 1 0 011-1h4a1 1 0 011 1v12"></path>
+                          </svg>
+                          <span>Shop Profile</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            router.push("/shop/analytics");
+                            setUserDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center space-x-3"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                          </svg>
+                          <span>Analytics</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="border-t border-gray-100 py-1">
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-3"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                      </svg>
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </>
       );
@@ -216,7 +351,7 @@ export default function NavBar() {
           </button>
           <button
             onClick={handleSignUp}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
           >
             Get Started
           </button>
@@ -227,7 +362,7 @@ export default function NavBar() {
 
   return (
     <>
-      <nav className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-40">
+      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
